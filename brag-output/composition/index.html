@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FixLanka — Brag Video</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <meta name="hf:width" content="1080" />
+  <meta name="hf:height" content="1920" />
+  <meta name="hf:duration" content="20" />
+  <meta name="hf:fps" content="30" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      font-family: 'Archivo', sans-serif;
+      background: #0F172A;
+      color: #FFFFFF;
+    }
+
+    #root {
+      position: relative;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #0F172A;
+    }
+
+    .clip {
+      will-change: transform, opacity;
+    }
+
+    /* ── Stage full-screen clips ── */
+    .stage {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ── Dot grid ── */
+    .dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(99,102,241,0.22) 1.5px, transparent 1.5px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+
+    /* ── Blue radial glow ── */
+    .hero-glow {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(37,99,235,0.40) 0%, rgba(37,99,235,0.1) 45%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Hook Line ── */
+    #hook-line {
+      font-size: 88px;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      text-align: center;
+      padding: 0 80px;
+      transform-origin: center;
+    }
+
+    /* ── Release Line ── */
+    #release-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #release-line {
+      font-size: 110px;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    #release-underline {
+      display: block;
+      width: 0px;
+      height: 8px;
+      background: #2563EB;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    /* ── Scene 3: Category Panel ── */
+    #hero-label-scene3 {
+      position: absolute;
+      top: 140px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+    }
+
+    #category-panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1220px;
+      background: #FFFFFF;
+      border-radius: 48px 48px 0 0;
+      padding: 60px 60px 80px;
+      box-shadow: 0 -20px 60px rgba(0,0,0,0.45);
+    }
+
+    #category-panel-label {
+      font-size: 38px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 40px;
+      letter-spacing: -0.01em;
+    }
+
+    .chip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 26px 30px;
+      border-radius: 24px;
+      font-size: 30px;
+      font-weight: 700;
+      color: #0F172A;
+      background: #F8FAFC;
+      border: 2px solid #E2E8F0;
+      letter-spacing: -0.01em;
+    }
+
+    .chip-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .chip.selected {
+      background: #EFF6FF;
+      border-color: #2563EB;
+      color: #1E40AF;
+      box-shadow: 0 4px 16px rgba(37,99,235,0.18);
+    }
+    .chip.selected .chip-icon {
+      background: #2563EB;
+    }
+
+    .chip-plumbing .chip-icon  { background: #DBEAFE; }
+    .chip-electrical .chip-icon{ background: #FEF3C7; }
+    .chip-ac .chip-icon        { background: #E0F2FE; }
+    .chip-appliances .chip-icon{ background: #EDE9FE; }
+    .chip-home .chip-icon      { background: #FFEDD5; }
+    .chip-painting .chip-icon  { background: #FFE4E6; }
+    .chip-phone .chip-icon     { background: #D1FAE5; }
+    .chip-cleaning .chip-icon  { background: #CCFBF1; }
+
+    /* ── Scene 4: Technician Card ── */
+    #tech-label-scene4 {
+      position: absolute;
+      top: 140px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    #tech-card {
+      position: absolute;
+      top: 480px;
+      left: 70px;
+      width: 940px;
+      background: #FFFFFF;
+      border-radius: 36px;
+      padding: 56px 52px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.15);
+      color: #0F172A;
+    }
+
+    .tech-header {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .tech-avatar {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      font-weight: 900;
+      color: #FFFFFF;
+      flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+    }
+
+    .tech-name {
+      font-size: 42px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .tech-verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #15803D;
+      background: #DCFCE7;
+      padding: 4px 16px;
+      border-radius: 12px;
+      margin-top: 6px;
+    }
+
+    .tech-location {
+      font-size: 28px;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    .tech-desc {
+      font-size: 30px;
+      color: #334155;
+      line-height: 1.45;
+      margin-bottom: 28px;
+    }
+
+    .tech-service-chip {
+      display: inline-block;
+      font-size: 28px;
+      font-weight: 700;
+      color: #1D4ED8;
+      background: #EFF6FF;
+      border: 1.5px solid #BFDBFE;
+      padding: 8px 24px;
+      border-radius: 16px;
+      margin-bottom: 36px;
+    }
+
+    .tech-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 2px solid #F1F5F9;
+      padding-top: 36px;
+    }
+
+    .tech-price-label {
+      font-size: 28px;
+      color: #64748B;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tech-price {
+      font-size: 44px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: -0.02em;
+    }
+
+    .tech-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      border: 2px solid #CBD5E1;
+      background: #F8FAFC;
+    }
+
+    .btn-profile {
+      background: #2563EB;
+      color: #FFFFFF;
+      font-size: 28px;
+      font-weight: 700;
+      padding: 18px 32px;
+      border-radius: 20px;
+    }
+
+    #cursor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
+      z-index: 100;
+      transform-origin: top left;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+    }
+
+    /* ── Scene 5: Outro ── */
+    #outro-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
+      text-align: center;
+    }
+
+    #outro-tagline {
+      font-size: 46px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: -0.01em;
+    }
+
+    #outro-logo {
+      font-size: 130px;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    #outro-logo .fix {
+      color: #2563EB;
+    }
+
+    #outro-sub {
+      font-size: 36px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<div id="root" data-composition-id="composition" data-width="1080" data-height="1920">
+
+  <!-- ══ AUDIO ══ -->
+  <audio id="bg-music"
+    data-start="0"
+    data-duration="20"
+    data-track-index="1"
+    data-volume="0.14"
+    src="assets/music/happy-beats-business-moves-vol-9-by-ende-dot-app.mp3">
+  </audio>
+
+  <audio id="vo"
+    data-start="0.3"
+    data-duration="18.3"
+    data-track-index="2"
+    data-volume="1"
+    src="assets/voiceover.wav">
+  </audio>
+
+  <audio id="sfx-hook"
+    data-start="0.05"
+    data-duration="0.8"
+    data-track-index="3"
+    data-volume="0.65"
+    src="assets/sfx/impact/impactSoft_medium_001.ogg">
+  </audio>
+
+  <audio id="sfx-chip1"
+    data-start="6.34"
+    data-duration="0.11"
+    data-track-index="4"
+    data-volume="0.5"
+    src="assets/sfx/interface/drop_001.ogg">
+  </audio>
+
+  <audio id="sfx-chip2"
+    data-start="6.86"
+    data-duration="0.19"
+    data-track-index="5"
+    data-volume="0.5"
+    src="assets/sfx/interface/drop_002.ogg">
+  </audio>
+
+  <audio id="sfx-chip3"
+    data-start="7.40"
+    data-duration="0.11"
+    data-track-index="6"
+    data-volume="0.5"
+    src="assets/sfx/interface/drop_001.ogg">
+  </audio>
+
+  <audio id="sfx-chip4"
+    data-start="7.92"
+    data-duration="0.19"
+    data-track-index="7"
+    data-volume="0.5"
+    src="assets/sfx/interface/drop_002.ogg">
+  </audio>
+
+  <audio id="sfx-card"
+    data-start="10.40"
+    data-duration="0.6"
+    data-track-index="8"
+    data-volume="0.65"
+    src="assets/sfx/casino/card-place-1.ogg">
+  </audio>
+
+  <audio id="sfx-wa"
+    data-start="14.20"
+    data-duration="0.12"
+    data-track-index="9"
+    data-volume="0.75"
+    src="assets/sfx/interface/bong_001.ogg">
+  </audio>
+
+  <audio id="sfx-logo"
+    data-start="16.5"
+    data-duration="1.0"
+    data-track-index="10"
+    data-volume="0.70"
+    src="assets/sfx/impact/impactBell_heavy_000.ogg">
+  </audio>
+
+  <!-- ══ SCENE 1 — Hook (0–3s) ══ -->
+  <div id="scene-1" class="stage clip" data-start="0" data-duration="3">
+    <div class="dot-grid"></div>
+    <div class="hero-glow"></div>
+    <p id="hook-line" class="clip" data-start="0" data-duration="3">
+      Your AC broke at midnight.
+    </p>
+  </div>
+
+  <!-- ══ SCENE 2 — Release (3–5s) ══ -->
+  <div id="scene-2" class="stage clip" data-start="3" data-duration="2">
+    <div class="dot-grid"></div>
+    <div class="hero-glow"></div>
+    <div id="release-box">
+      <p id="release-line" class="clip" data-start="3" data-duration="2">
+        One tap. Fixed.
+      </p>
+      <span id="release-underline" class="clip" data-start="3" data-duration="2"></span>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 3 — Category Grid (5–10s) ══ -->
+  <div id="scene-3" class="stage clip" data-start="5" data-duration="5" data-layout-allow-overflow>
+    <div class="dot-grid"></div>
+    <div class="hero-glow"></div>
+
+    <p id="hero-label-scene3" class="clip" data-start="5" data-duration="5">
+      Sri Lanka's Technician Directory
+    </p>
+
+    <div id="category-panel" class="clip" data-start="5" data-duration="5" data-layout-allow-overflow>
+      <div id="category-panel-label">Popular Services</div>
+      <div class="chip-grid">
+        <div id="chip-1" class="chip chip-plumbing clip" data-start="5" data-duration="5">
+          <div class="chip-icon">🔧</div>
+          Plumbing
+        </div>
+        <div id="chip-2" class="chip chip-electrical clip selected" data-start="5" data-duration="5">
+          <div class="chip-icon">⚡</div>
+          Electrical
+        </div>
+        <div id="chip-3" class="chip chip-ac clip" data-start="5" data-duration="5">
+          <div class="chip-icon">❄</div>
+          AC Repair
+        </div>
+        <div id="chip-4" class="chip chip-appliances clip" data-start="5" data-duration="5">
+          <div class="chip-icon">📱</div>
+          Appliances
+        </div>
+        <div id="chip-5" class="chip chip-home clip" data-start="5" data-duration="5">
+          <div class="chip-icon">🔨</div>
+          Home Repairs
+        </div>
+        <div id="chip-6" class="chip chip-painting clip" data-start="5" data-duration="5">
+          <div class="chip-icon">🖌</div>
+          Painting
+        </div>
+        <div id="chip-7" class="chip chip-phone clip" data-start="5" data-duration="5">
+          <div class="chip-icon">📞</div>
+          Computers
+        </div>
+        <div id="chip-8" class="chip chip-cleaning clip" data-start="5" data-duration="5">
+          <div class="chip-icon">🧹</div>
+          Cleaning
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 4 — Technician Card (10–15s) ══ -->
+  <div id="scene-4" class="stage clip" data-start="10" data-duration="5">
+    <div class="dot-grid"></div>
+    <div class="hero-glow"></div>
+
+    <p id="tech-label-scene4" class="clip" data-start="10" data-duration="5">
+      Direct Contact · No Middleman
+    </p>
+
+    <div id="tech-card" class="clip" data-start="10" data-duration="5">
+      <div class="tech-header">
+        <div class="tech-avatar">KP</div>
+        <div>
+          <div class="tech-name">Kamal Perera</div>
+          <div class="tech-verified">✓ Verified Pro</div>
+          <div class="tech-location">📍 Nugegoda · Colombo</div>
+        </div>
+      </div>
+
+      <p class="tech-desc">
+        Specialist in residential plumbing, rapid emergency leak repair &amp; pipe installation.
+      </p>
+
+      <div class="tech-service-chip">Plumbing &amp; Water Lines</div>
+
+      <div class="tech-footer">
+        <div>
+          <div class="tech-price-label">Starting from</div>
+          <div class="tech-price">LKR 2,500</div>
+        </div>
+        <div class="tech-actions">
+          <div id="call-btn" class="btn-icon">📞</div>
+          <div id="wa-btn" class="btn-icon wa clip" data-start="10" data-duration="5">💬</div>
+          <div class="btn-profile">Call Now →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animated Cursor -->
+    <div id="cursor" class="clip" data-start="10" data-duration="5">
+      <svg viewBox="0 0 24 24" fill="#0F172A" stroke="#FFFFFF" stroke-width="2" width="54" height="54">
+        <path d="M4 3l16 9-9 1-5 9z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 5 — Outro (15–20s) ══ -->
+  <div id="scene-5" class="stage clip" data-start="15" data-duration="5">
+    <div class="dot-grid"></div>
+    <div class="hero-glow"></div>
+
+    <div id="outro-container" class="clip" data-start="15" data-duration="5">
+      <p id="outro-tagline" class="clip" data-start="15" data-duration="5">
+        Find trusted technicians near you.
+      </p>
+      <p id="outro-logo" class="clip" data-start="15" data-duration="5">
+        <span class="fix">Fix</span>Lanka
+      </p>
+      <p id="outro-sub" class="clip" data-start="15" data-duration="5">
+        Free · Direct · Local 🇱🇰
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ GSAP ENGINE & RUNTIME REGISTRY ══ -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  window.__timelines["composition"] = tl;
+
+  // Initial States
+  gsap.set("#scene-1", { opacity: 1 }); // Frame 0 visible
+  gsap.set("#hook-line", { opacity: 1, scale: 1 }); // Frame 0 visible for social thumbnail
+  gsap.set("#scene-2", { opacity: 0 });
+  gsap.set("#scene-3", { opacity: 0 });
+  gsap.set("#scene-4", { opacity: 0 });
+  gsap.set("#scene-5", { opacity: 0 });
+
+  // SCENE 1 (0 to 3s)
+  tl.to("#scene-1", { opacity: 0, duration: 0.25 }, 2.9);
+
+  // SCENE 2 (3 to 5s)
+  tl.set("#scene-2", { opacity: 1 }, 3.0);
+  tl.fromTo("#release-line", 
+    { opacity: 0, y: 35 }, 
+    { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 
+    3.05
+  );
+  tl.fromTo("#release-underline", 
+    { width: 0 }, 
+    { width: 340, duration: 0.5, ease: "power2.out" }, 
+    3.35
+  );
+  tl.to("#scene-2", { opacity: 0, duration: 0.25 }, 4.9);
+
+  // SCENE 3 (5 to 10s)
+  tl.set("#scene-3", { opacity: 1 }, 5.0);
+  tl.fromTo("#hero-label-scene3", 
+    { opacity: 0, y: -20 }, 
+    { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 
+    5.1
+  );
+  tl.fromTo("#category-panel", 
+    { y: 1220 }, 
+    { y: 0, duration: 0.7, ease: "power3.out" }, 
+    5.2
+  );
+
+  // Staggered beat-grid chip reveals
+  const chips = ["#chip-1", "#chip-2", "#chip-3", "#chip-4", "#chip-5", "#chip-6", "#chip-7", "#chip-8"];
+  chips.forEach((chip) => {
+    gsap.set(chip, { opacity: 0, y: 30, scale: 0.95 });
+  });
+
+  tl.to("#chip-1", { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.5)" }, 6.34);
+  tl.to("#chip-2", { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.5)" }, 6.86);
+  tl.to("#chip-3", { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.5)" }, 7.40);
+  tl.to("#chip-4", { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.5)" }, 7.92);
+
+  // Rest of chips group pop
+  tl.to(["#chip-5", "#chip-6", "#chip-7", "#chip-8"], { 
+    opacity: 1, y: 0, scale: 1, duration: 0.35, stagger: 0.08, ease: "power2.out" 
+  }, 8.44);
+
+  tl.to("#scene-3", { opacity: 0, duration: 0.3 }, 9.85);
+
+  // SCENE 4 (10 to 15s)
+  tl.set("#scene-4", { opacity: 1 }, 10.0);
+  tl.fromTo("#tech-label-scene4", 
+    { opacity: 0, y: -15 }, 
+    { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 
+    10.1
+  );
+  tl.fromTo("#tech-card", 
+    { opacity: 0, y: 90, scale: 0.94 }, 
+    { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 
+    10.40
+  );
+
+  // Cursor animation
+  gsap.set("#cursor", { opacity: 0, x: 780, y: 980 });
+  tl.to("#cursor", { opacity: 1, duration: 0.2 }, 12.5);
+  tl.to("#cursor", { x: 576, y: 885, duration: 0.9, ease: "power2.inOut" }, 12.8);
+  
+  // Tap on WhatsApp button at 14.2s
+  tl.to("#cursor", { scale: 0.75, duration: 0.12, ease: "power1.in" }, 14.15);
+  tl.to("#wa-btn", { 
+    scale: 1.25, 
+    backgroundColor: "#DCFCE7", 
+    borderColor: "#16A34A", 
+    duration: 0.15 
+  }, 14.20);
+  tl.to("#cursor", { scale: 1, duration: 0.15, ease: "back.out(2)" }, 14.27);
+  tl.to("#cursor", { opacity: 0, duration: 0.3 }, 14.6);
+  tl.to("#scene-4", { opacity: 0, duration: 0.3 }, 14.85);
+
+  // SCENE 5 (15 to 20s) - Holds logo and tagline for >2.5s for readability
+  tl.set("#scene-5", { opacity: 1 }, 15.0);
+  tl.fromTo("#outro-tagline", 
+    { opacity: 0, y: 20 }, 
+    { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 
+    15.1
+  );
+  tl.fromTo("#outro-logo", 
+    { opacity: 0, scale: 0.82 }, 
+    { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)" }, 
+    16.2
+  );
+  tl.fromTo("#outro-sub", 
+    { opacity: 0, y: 15 }, 
+    { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 
+    16.8
+  );
+</script>
+
+</body>
+</html>

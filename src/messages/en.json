@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "title": "FixLanka — Find Trusted Technicians in Sri Lanka",
+    "description": "Find reliable plumbers, electricians, AC technicians, and more near you in Sri Lanka."
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "registerTechnician": "Register as Technician",
+    "admin": "Admin"
+  },
+  "hero": {
+    "headline": "Find trusted technicians near you",
+    "subheadline": "Browse verified plumbers, electricians, AC technicians and more across Sri Lanka.",
+    "searchPlaceholder": "Search by name, service, or location…"
+  },
+  "categories": {
+    "heading": "Popular services",
+    "plumbing": "Plumbing",
+    "electrical": "Electrical Repairs",
+    "ac": "Air Conditioning",
+    "appliances": "Appliance Repairs",
+    "homeRepairs": "Home Repairs",
+    "painting": "Painting & Carpentry",
+    "electronics": "Phone & Computer Repairs",
+    "cleaning": "Cleaning Services"
+  },
+  "listings": {
+    "heading": "Technicians",
+    "filterByDistrict": "All districts",
+    "filterByTown": "Town name…",
+    "noResults": "No technicians found matching your search.",
+    "noResultsHint": "Try a different search term or district.",
+    "viewProfile": "View profile",
+    "verified": "Verified",
+    "demoLabel": "Demo listing"
+  },
+  "profile": {
+    "servicesOffered": "Services offered",
+    "serviceArea": "Service area",
+    "about": "About",
+    "pricing": "Indicative pricing",
+    "pricingFrom": "From LKR",
+    "callNow": "Call now",
+    "whatsapp": "WhatsApp",
+    "backToListings": "Back to listings",
+    "notFound": "Technician not found",
+    "notFoundHint": "This listing may have been removed or is no longer available."
+  },
+  "register": {
+    "heading": "Want to be listed on FixLanka?",
+    "description": "Send us your details and we'll add your listing. It's free during our launch period.",
+    "whatsappCta": "Send your details via WhatsApp",
+    "info": "Include your name, services, location, and phone number."
+  },
+  "footer": {
+    "tagline": "Connecting Sri Lanka with trusted technicians.",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© {year} FixLanka. All rights reserved."
+  },
+  "admin": {
+    "login": "Admin Login",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "loginError": "Invalid email or password.",
+    "dashboard": "Dashboard",
+    "addTechnician": "Add technician",
+    "editTechnician": "Edit technician",
+    "deleteTechnician": "Delete technician",
+    "confirmDelete": "Are you sure you want to delete this listing? This cannot be undone.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "published": "Published",
+    "draft": "Draft",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone number",
+    "whatsappLabel": "WhatsApp number",
+    "descriptionSiLabel": "Description (Sinhala)",
+    "descriptionEnLabel": "Description (English)",
+    "districtLabel": "District",
+    "townLabel": "Town",
+    "servicesLabel": "Services",
+    "priceLabel": "Indicative price (LKR)",
+    "imageUrlLabel": "Profile image URL",
+    "noTechnicians": "No technician listings yet.",
+    "categories": "Categories",
+    "manageCategoriesHint": "Manage service categories",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again.",
+    "language": "English"
+  }
+}
