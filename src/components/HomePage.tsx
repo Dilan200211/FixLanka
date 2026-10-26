@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SearchBar } from '@/components/SearchBar';
 import { CategoryCard } from '@/components/CategoryCard';
 import { TechnicianCard } from '@/components/TechnicianCard';
@@ -9,17 +9,53 @@ import { EmptyState } from '@/components/EmptyState';
 import { useI18n } from '@/lib/i18n';
 import { serviceCategories, getCategoryName } from '@/lib/categories';
 import { demoTechnicians } from '@/lib/demo-data';
+import { districts } from '@/lib/districts';
+import { createClient } from '@/lib/supabase/client';
+import type { TechnicianWithServices } from '@/lib/types';
 import { MessageSquare, RotateCcw, ShieldCheck, Wrench, Sparkles } from 'lucide-react';
 
 export function HomePage() {
   const { locale, t } = useI18n();
+  const [technicians, setTechnicians] = useState<TechnicianWithServices[]>(demoTechnicians);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [townSearch, setTownSearch] = useState('');
 
+  useEffect(() => {
+    async function loadPublishedTechnicians() {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from('technicians')
+          .select(`
+            *,
+            district:districts(*),
+            services:technician_services(
+              category:service_categories(*)
+            )
+          `)
+          .eq('published', true)
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          const formatted: TechnicianWithServices[] = data.map((t: any) => ({
+            ...t,
+            services: t.services?.map((ts: any) => ts.category).filter(Boolean) || [],
+            district: t.district || districts.find((d) => d.code === t.district_code)!,
+          }));
+          setTechnicians(formatted);
+        }
+      } catch {
+        // Fallback to demoTechnicians
+      }
+    }
+
+    loadPublishedTechnicians();
+  }, []);
+
   const filteredTechnicians = useMemo(() => {
-    let results = demoTechnicians.filter((tech) => tech.published);
+    let results = technicians.filter((tech) => tech.published);
 
     // Search query filter
     if (search.trim()) {
