@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { demoTechnicians } from '@/lib/demo-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://fixlanka.lk';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.fixlanka.com';
 
   const techUrls = demoTechnicians.map((tech) => ({
     url: `${baseUrl}/technicians/${tech.slug}`,
