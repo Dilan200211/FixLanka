@@ -1,29 +1,75 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
 import { Wrench, AlertCircle } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function AdminLoginPage() {
   const { t } = useI18n();
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    try {
+      const supabase = createClient();
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          router.replace('/admin');
+        }
+      });
+    } catch {
+      // Env variables not yet set
+    }
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    // TODO: Replace with actual Supabase auth when configured
-    // For now, show a message that Supabase must be configured
-    setTimeout(() => {
-      setError(
-        'Supabase authentication is not yet configured. Please set up NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY environment variables.'
-      );
+    try {
+      const supabase = createClient();
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (!data.user) {
+        setError('Failed to authenticate.');
+        setLoading(false);
+        return;
+      }
+
+      // Verify the user is an authorized admin in admin_users
+      const { data: adminRecord, error: adminError } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('id', data.user.id)
+        .maybeSingle();
+
+      if (adminError || !adminRecord) {
+        await supabase.auth.signOut();
+        setError('Access denied: this account is not registered in the admin_users table.');
+        setLoading(false);
+        return;
+      }
+
+      router.replace('/admin');
+    } catch (err: any) {
+      setError(err?.message || 'Authentication failed. Please verify Supabase environment variables.');
       setLoading(false);
-    }, 500);
+    }
   };
 
   return (

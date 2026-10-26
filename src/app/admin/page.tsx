@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
 import { demoTechnicians } from '@/lib/demo-data';
 import { getCategoryName } from '@/lib/categories';
+import { createClient } from '@/lib/supabase/client';
 import {
   Plus,
   Pencil,
@@ -12,16 +14,66 @@ import {
   EyeOff,
   LogOut,
   AlertTriangle,
+  Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
   const { locale, t } = useI18n();
+  const router = useRouter();
   const [technicians] = useState(demoTechnicians);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // TODO: Replace with actual Supabase auth check
-  // For now, show a placeholder dashboard with demo data
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+          router.replace('/admin/login');
+          return;
+        }
+
+        const { data: adminRecord } = await supabase
+          .from('admin_users')
+          .select('id')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (!adminRecord) {
+          await supabase.auth.signOut();
+          router.replace('/admin/login');
+          return;
+        }
+
+        setLoading(false);
+      } catch {
+        router.replace('/admin/login');
+      }
+    }
+
+    checkAuth();
+  }, [router]);
+
+  const handleSignOut = async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {
+      // Ignored
+    }
+    router.replace('/admin/login');
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-surface">
@@ -30,14 +82,14 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-xl font-bold text-navy">{t.admin.dashboard}</h1>
           <div className="flex items-center gap-3">
-            <Link
-              href="/admin/login"
+            <button
+              onClick={handleSignOut}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-navy-light
-                         hover:text-danger transition-colors"
+                         hover:text-danger transition-colors cursor-pointer"
             >
               <LogOut size={16} />
               {t.admin.signOut}
-            </Link>
+            </button>
           </div>
         </div>
 
