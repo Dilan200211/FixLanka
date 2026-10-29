@@ -35,15 +35,13 @@ export function Header() {
             {t.nav.home}
           </Link>
 
-          <a
-            href="https://wa.me/?text=I%20want%20to%20register%20as%20a%20technician%20on%20FixLanka"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/register"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-bold bg-primary text-white hover:bg-primary-hover transition-colors shadow-none"
           >
             <PlusCircle size={15} />
             <span>{t.nav.registerTechnician}</span>
-          </a>
+          </Link>
 
           <LanguageSwitcher />
         </div>
@@ -71,16 +69,14 @@ export function Header() {
           >
             {t.nav.home}
           </Link>
-          <a
-            href="https://wa.me/?text=I%20want%20to%20register%20as%20a%20technician%20on%20FixLanka"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/register"
             onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold bg-primary text-white transition-colors"
           >
             <PlusCircle size={16} />
             <span>{t.nav.registerTechnician}</span>
-          </a>
+          </Link>
         </nav>
       )}
     </header>

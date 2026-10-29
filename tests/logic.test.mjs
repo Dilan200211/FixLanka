@@ -173,3 +173,22 @@ test('formatTechnician normalizes database record with joined services and distr
   assert.equal(formatted.is_demo, false);
 });
 
+test('Technician registration validation accepts valid public application', () => {
+  const application = {
+    name: 'Ruwan Chaminda',
+    phone: '0779876543',
+    whatsapp_number: '0779876543',
+    district_code: 'KLT',
+    town: 'Panadura',
+    category_ids: ['a0000000-0000-0000-0000-000000000003'],
+    indicative_price_lkr: 3500,
+    description_en: 'AC installation and routine service',
+    description_si: 'වායු සමීකරණ සවි කිරීම සහ සේවා',
+  };
+
+  const res = validateTechnicianInput(application);
+  assert.equal(res.valid, true);
+  assert.equal(Object.keys(res.errors).length, 0);
+});
+
+

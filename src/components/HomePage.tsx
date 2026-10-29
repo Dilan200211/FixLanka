@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
 import { SearchBar } from '@/components/SearchBar';
 import { CategoryCard } from '@/components/CategoryCard';
 import { TechnicianCard } from '@/components/TechnicianCard';
@@ -336,15 +337,13 @@ export function HomePage({ initialTechnicians }: HomePageProps = {}) {
           <p className="text-sm sm:text-base text-blue-200 max-w-lg mx-auto mb-8 leading-relaxed">
             {t.register.description}
           </p>
-          <a
-            href="https://wa.me/?text=I%20want%20to%20register%20as%20a%20technician%20on%20FixLanka"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-7 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-black rounded-2xl text-sm sm:text-base transition-all shadow-lg shadow-emerald-900/30 hover:shadow-emerald-900/50 hover:-translate-y-0.5 active:translate-y-0"
+          <Link
+            href="/register"
+            className="inline-flex items-center gap-2.5 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-black rounded-2xl text-sm sm:text-base transition-all shadow-lg shadow-emerald-900/30 hover:shadow-emerald-900/50 hover:-translate-y-0.5 active:translate-y-0"
           >
-            <MessageSquare size={20} />
+            <ShieldCheck size={20} />
             <span>{t.register.whatsappCta}</span>
-          </a>
+          </Link>
           <p className="text-[13px] text-blue-300/70 mt-5 max-w-md mx-auto">
             {t.register.info}
           </p>

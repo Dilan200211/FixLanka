@@ -19,7 +19,16 @@ import {
   X,
   Check,
   Search,
+  CheckCircle2,
+  Clock,
+  Phone,
+  MessageSquare,
+  MapPin,
+  ExternalLink,
+  ShieldCheck,
 } from 'lucide-react';
+
+type TabType = 'all' | 'pending' | 'published';
 
 interface FormState {
   id?: string;
@@ -58,6 +67,9 @@ export default function AdminDashboard() {
   const [technicians, setTechnicians] = useState<TechnicianWithServices[]>([]);
   const [categories, setCategories] = useState<ServiceCategory[]>(serviceCategories);
   const [filterSearch, setFilterSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<TabType>('all');
+  const [reviewTech, setReviewTech] = useState<TechnicianWithServices | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Modal states
   const [modalOpen, setModalOpen] = useState(false);
@@ -273,9 +285,59 @@ export default function AdminDashboard() {
         .eq('id', tech.id);
 
       if (error) throw error;
+      setToastMessage(newStatus ? `${tech.name} is now published on the website.` : `${tech.name} has been unpublished.`);
     } catch (err) {
       console.error('Failed to toggle publish:', err);
       await fetchTechnicians(); // Revert on error
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Approve technician (immediately published & verified on site)
+  const handleApprove = async (tech: TechnicianWithServices) => {
+    setActionLoading(tech.id);
+    try {
+      const supabase = createClient();
+      setTechnicians((prev) =>
+        prev.map((t) => (t.id === tech.id ? { ...t, published: true, verified: true } : t))
+      );
+
+      const { error } = await supabase
+        .from('technicians')
+        .update({ published: true, verified: true })
+        .eq('id', tech.id);
+
+      if (error) throw error;
+      setToastMessage(`✓ Approved! ${tech.name} is now live on FixLanka.`);
+      if (reviewTech?.id === tech.id) setReviewTech(null);
+    } catch (err: any) {
+      console.error('Failed to approve technician:', err);
+      alert(`Approval error: ${err.message}`);
+      await fetchTechnicians();
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Reject technician application
+  const handleReject = async (tech: TechnicianWithServices) => {
+    if (!window.confirm(`Are you sure you want to reject and remove the registration application for "${tech.name}"?`)) {
+      return;
+    }
+
+    setActionLoading(tech.id);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from('technicians').delete().eq('id', tech.id);
+      if (error) throw error;
+
+      setTechnicians((prev) => prev.filter((t) => t.id !== tech.id));
+      setToastMessage(`Registration application for ${tech.name} was rejected and removed.`);
+      if (reviewTech?.id === tech.id) setReviewTech(null);
+    } catch (err: any) {
+      console.error('Failed to reject technician:', err);
+      alert(`Rejection error: ${err.message}`);
     } finally {
       setActionLoading(null);
     }
@@ -291,6 +353,7 @@ export default function AdminDashboard() {
 
       setTechnicians((prev) => prev.filter((t) => t.id !== id));
       setDeleteConfirmId(null);
+      setToastMessage('Technician listing deleted successfully.');
     } catch (err: any) {
       alert(`Failed to delete technician: ${err.message}`);
     } finally {
@@ -298,18 +361,29 @@ export default function AdminDashboard() {
     }
   };
 
-  // Filtered view
+  // Counts for tabs
+  const pendingCount = useMemo(() => technicians.filter((t) => !t.published).length, [technicians]);
+  const publishedCount = useMemo(() => technicians.filter((t) => t.published).length, [technicians]);
+
+  // Filtered view with Tab and Search
   const filteredTechs = useMemo(() => {
-    if (!filterSearch.trim()) return technicians;
+    let list = technicians;
+    if (activeTab === 'pending') {
+      list = list.filter((t) => !t.published);
+    } else if (activeTab === 'published') {
+      list = list.filter((t) => t.published);
+    }
+
+    if (!filterSearch.trim()) return list;
     const q = filterSearch.toLowerCase();
-    return technicians.filter(
+    return list.filter(
       (t) =>
         t.name.toLowerCase().includes(q) ||
         t.town.toLowerCase().includes(q) ||
         t.district?.name_en.toLowerCase().includes(q) ||
         t.services.some((s) => s.name_en.toLowerCase().includes(q))
     );
-  }, [technicians, filterSearch]);
+  }, [technicians, activeTab, filterSearch]);
 
   if (loading) {
     return (
@@ -322,12 +396,28 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen bg-surface">
       <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Toast notification banner */}
+        {toastMessage && (
+          <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-semibold text-sm flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={18} className="text-emerald-600" />
+              <span>{toastMessage}</span>
+            </div>
+            <button
+              onClick={() => setToastMessage(null)}
+              className="text-emerald-700 hover:text-emerald-900 p-1"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-navy">{t.admin.dashboard}</h1>
             <p className="text-sm text-navy-light mt-1">
-              Manage your technician directory listings and visibility
+              Review registrations, approve profiles, and manage live listings
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -350,6 +440,59 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Tabs: All, Pending Approvals, Live */}
+        <div className="flex items-center gap-2 mb-6 border-b border-border pb-3 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeTab === 'all'
+                ? 'bg-navy text-white shadow-xs'
+                : 'text-slate-600 hover:text-navy hover:bg-slate-100'
+            }`}
+          >
+            <span>{t.admin.allTab}</span>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${
+              activeTab === 'all' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+            }`}>
+              {technicians.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('pending')}
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeTab === 'pending'
+                ? 'bg-amber-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-navy hover:bg-slate-100'
+            }`}
+          >
+            <Clock size={15} />
+            <span>{t.admin.pendingTab}</span>
+            {pendingCount > 0 && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500 text-white font-extrabold animate-pulse">
+                {pendingCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('published')}
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeTab === 'published'
+                ? 'bg-emerald-700 text-white shadow-xs'
+                : 'text-slate-600 hover:text-navy hover:bg-slate-100'
+            }`}
+          >
+            <CheckCircle2 size={15} />
+            <span>{t.admin.publishedTab}</span>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${
+              activeTab === 'published' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+            }`}>
+              {publishedCount}
+            </span>
+          </button>
+        </div>
+
         {/* Search filter */}
         <div className="mb-6 flex items-center gap-3 bg-white px-4 py-2.5 rounded-xl border border-border shadow-2xs max-w-md">
           <Search size={18} className="text-navy-light" />
@@ -370,15 +513,23 @@ export default function AdminDashboard() {
         {/* Listings table */}
         {filteredTechs.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-border p-8">
-            <p className="text-navy font-medium text-base mb-1">{t.admin.noTechnicians}</p>
-            <p className="text-navy-light text-sm mb-4">Click below to add your first technician listing.</p>
-            <button
-              onClick={openAddModal}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover"
-            >
-              <Plus size={16} />
-              {t.admin.addTechnician}
-            </button>
+            <p className="text-navy font-medium text-base mb-1">
+              {activeTab === 'pending' ? t.admin.noPending : t.admin.noTechnicians}
+            </p>
+            <p className="text-navy-light text-sm mb-4">
+              {activeTab === 'pending'
+                ? 'All registration applications have been reviewed.'
+                : 'Click below to add a technician listing manually.'}
+            </p>
+            {activeTab !== 'pending' && (
+              <button
+                onClick={openAddModal}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover"
+              >
+                <Plus size={16} />
+                {t.admin.addTechnician}
+              </button>
+            )}
           </div>
         ) : (
           <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-2xs">
@@ -410,19 +561,32 @@ export default function AdminDashboard() {
                   {filteredTechs.map((tech) => (
                     <tr
                       key={tech.id}
-                      className="hover:bg-slate-50/50 transition-colors"
+                      className={`hover:bg-slate-50/50 transition-colors ${
+                        !tech.published ? 'bg-amber-50/20' : ''
+                      }`}
                     >
                       <td className="px-5 py-4">
                         <div className="font-semibold text-navy flex items-center gap-2">
-                          {tech.name}
+                          <button
+                            type="button"
+                            onClick={() => setReviewTech(tech)}
+                            className="hover:text-blue-600 text-left font-bold"
+                          >
+                            {tech.name}
+                          </button>
                           {tech.verified && (
-                            <span className="inline-flex items-center text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                            <span className="inline-flex items-center text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
                               ✓ Verified
                             </span>
                           )}
+                          {!tech.published && (
+                            <span className="inline-flex items-center text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">
+                              New
+                            </span>
+                          )}
                         </div>
-                        <div className="text-xs text-navy-light mt-0.5 sm:hidden">
-                          {tech.services?.map((s) => s.name_en).join(', ')} · {tech.town}
+                        <div className="text-xs text-navy-light mt-0.5">
+                          {tech.phone || 'No phone'} {tech.town ? `· ${tech.town}` : ''}
                         </div>
                       </td>
                       <td className="px-5 py-4 hidden sm:table-cell">
@@ -455,48 +619,244 @@ export default function AdminDashboard() {
                             {t.admin.published}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                            {t.admin.draft}
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                            <Clock size={12} className="text-amber-600" />
+                            {t.admin.pending}
                           </span>
                         )}
                       </td>
                       <td className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            title={tech.published ? t.admin.unpublish : t.admin.publish}
-                            onClick={() => handleTogglePublish(tech)}
-                            disabled={actionLoading === tech.id}
-                            className="p-1.5 rounded-lg border border-border hover:bg-slate-100 text-navy-light hover:text-navy cursor-pointer transition-colors"
-                          >
-                            {actionLoading === tech.id ? (
-                              <Loader2 size={16} className="animate-spin text-primary" />
-                            ) : tech.published ? (
-                              <EyeOff size={16} />
-                            ) : (
-                              <Eye size={16} />
-                            )}
-                          </button>
-                          <button
-                            title={t.admin.editTechnician}
-                            onClick={() => openEditModal(tech)}
-                            className="p-1.5 rounded-lg border border-border hover:bg-slate-100 text-navy-light hover:text-navy cursor-pointer transition-colors"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            title={t.admin.deleteTechnician}
-                            onClick={() => setDeleteConfirmId(tech.id)}
-                            className="p-1.5 rounded-lg border border-border hover:bg-red-50 text-navy-light hover:text-red-600 cursor-pointer transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
+                        {!tech.published ? (
+                          /* Pending Application Approval Actions */
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setReviewTech(tech)}
+                              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+                              title="Review full application"
+                            >
+                              Review
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleApprove(tech)}
+                              disabled={actionLoading === tech.id}
+                              className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors cursor-pointer shadow-xs"
+                              title={t.admin.approve}
+                            >
+                              {actionLoading === tech.id ? (
+                                <Loader2 size={13} className="animate-spin" />
+                              ) : (
+                                <Check size={13} strokeWidth={3} />
+                              )}
+                              <span>Approve</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleReject(tech)}
+                              disabled={actionLoading === tech.id}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors cursor-pointer"
+                              title={t.admin.reject}
+                            >
+                              <X size={13} />
+                              <span>Reject</span>
+                            </button>
+                          </div>
+                        ) : (
+                          /* Standard published row actions */
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              title={t.admin.unpublish}
+                              onClick={() => handleTogglePublish(tech)}
+                              disabled={actionLoading === tech.id}
+                              className="p-1.5 rounded-lg border border-border hover:bg-slate-100 text-navy-light hover:text-navy cursor-pointer transition-colors"
+                            >
+                              {actionLoading === tech.id ? (
+                                <Loader2 size={16} className="animate-spin text-primary" />
+                              ) : (
+                                <EyeOff size={16} />
+                              )}
+                            </button>
+                            <button
+                              title={t.admin.editTechnician}
+                              onClick={() => openEditModal(tech)}
+                              className="p-1.5 rounded-lg border border-border hover:bg-slate-100 text-navy-light hover:text-navy cursor-pointer transition-colors"
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              title={t.admin.deleteTechnician}
+                              onClick={() => setDeleteConfirmId(tech.id)}
+                              className="p-1.5 rounded-lg border border-border hover:bg-red-50 text-navy-light hover:text-red-600 cursor-pointer transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Detailed Application Review Modal */}
+        {reviewTech && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 overflow-y-auto">
+            <div className="bg-white rounded-3xl border border-border max-w-xl w-full p-6 sm:p-8 shadow-2xl my-8">
+              <div className="flex items-center justify-between pb-4 border-b border-border mb-6">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 mb-1">
+                    <Clock size={12} />
+                    {reviewTech.published ? 'Published Listing' : 'Registration Application'}
+                  </span>
+                  <h2 className="text-xl font-black text-navy">{reviewTech.name}</h2>
+                </div>
+                <button
+                  onClick={() => setReviewTech(null)}
+                  className="text-slate-400 hover:text-navy p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-5 text-sm">
+                {/* Contact info cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                      <Phone size={13} className="text-blue-600" />
+                      <span>Phone Number</span>
+                    </div>
+                    {reviewTech.phone ? (
+                      <a
+                        href={`tel:${reviewTech.phone}`}
+                        className="font-bold text-blue-600 hover:underline flex items-center gap-1.5"
+                      >
+                        {reviewTech.phone}
+                        <ExternalLink size={12} />
+                      </a>
+                    ) : (
+                      <span className="text-slate-400 font-medium">None</span>
+                    )}
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                      <MessageSquare size={13} className="text-emerald-600" />
+                      <span>WhatsApp</span>
+                    </div>
+                    {reviewTech.whatsapp_number ? (
+                      <a
+                        href={`https://wa.me/${reviewTech.whatsapp_number.replace('+', '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-emerald-600 hover:underline flex items-center gap-1.5"
+                      >
+                        {reviewTech.whatsapp_number}
+                        <ExternalLink size={12} />
+                      </a>
+                    ) : (
+                      <span className="text-slate-400 font-medium">None</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Location & Services */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center gap-2 text-slate-700">
+                    <MapPin size={16} className="text-primary shrink-0" />
+                    <span className="font-bold">{reviewTech.town}</span>
+                    <span className="text-slate-500">
+                      ({getDistrictName(reviewTech.district_code, locale)} District)
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+                      Applied Services
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {reviewTech.services?.map((s) => (
+                        <span
+                          key={s.id || s.slug}
+                          className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-100 text-blue-800"
+                        >
+                          {s.name_en}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {reviewTech.indicative_price_lkr && (
+                    <div className="pt-2 border-t border-slate-200">
+                      <span className="text-xs text-slate-500">Starting rate: </span>
+                      <span className="font-extrabold text-navy">
+                        LKR {reviewTech.indicative_price_lkr.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Description */}
+                {(reviewTech.description_en || reviewTech.description_si) && (
+                  <div>
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+                      Applicant Experience & Notes
+                    </span>
+                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 leading-relaxed text-xs sm:text-sm">
+                      {reviewTech.description_en || reviewTech.description_si}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Review Actions */}
+              <div className="mt-8 pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setReviewTech(null)}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold text-sm cursor-pointer"
+                >
+                  Close
+                </button>
+                {!reviewTech.published ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleReject(reviewTech)}
+                      disabled={actionLoading === reviewTech.id}
+                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-sm cursor-pointer transition-colors"
+                    >
+                      Reject Application
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleApprove(reviewTech)}
+                      disabled={actionLoading === reviewTech.id}
+                      className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm cursor-pointer transition-colors shadow-sm flex items-center justify-center gap-1.5"
+                    >
+                      {actionLoading === reviewTech.id ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Check size={16} strokeWidth={3} />
+                      )}
+                      <span>Approve & Publish Immediately</span>
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleTogglePublish(reviewTech)}
+                    disabled={actionLoading === reviewTech.id}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 font-bold text-sm cursor-pointer"
+                  >
+                    Unpublish
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
