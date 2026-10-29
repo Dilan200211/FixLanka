@@ -8,15 +8,21 @@ import { DistrictFilter } from '@/components/DistrictFilter';
 import { EmptyState } from '@/components/EmptyState';
 import { useI18n } from '@/lib/i18n';
 import { serviceCategories, getCategoryName } from '@/lib/categories';
-import { demoTechnicians } from '@/lib/demo-data';
+import { formatTechnician } from '@/lib/technician-format';
 import { districts } from '@/lib/districts';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import type { TechnicianWithServices } from '@/lib/types';
 import { MessageSquare, RotateCcw, ShieldCheck, Wrench, Sparkles } from 'lucide-react';
 
-export function HomePage() {
+interface HomePageProps {
+  initialTechnicians?: TechnicianWithServices[];
+}
+
+export function HomePage({ initialTechnicians }: HomePageProps = {}) {
   const { locale, t } = useI18n();
-  const [technicians, setTechnicians] = useState<TechnicianWithServices[]>(demoTechnicians);
+  const [technicians, setTechnicians] = useState<TechnicianWithServices[]>(
+    initialTechnicians ?? []
+  );
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
@@ -25,6 +31,10 @@ export function HomePage() {
   useEffect(() => {
     async function loadPublishedTechnicians() {
       try {
+        if (!isSupabaseConfigured()) {
+          return;
+        }
+
         const supabase = createClient();
         const { data, error } = await supabase
           .from('technicians')
@@ -38,16 +48,12 @@ export function HomePage() {
           .eq('published', true)
           .order('created_at', { ascending: false });
 
-        if (!error && data && data.length > 0) {
-          const formatted: TechnicianWithServices[] = data.map((t: any) => ({
-            ...t,
-            services: t.services?.map((ts: any) => ts.category).filter(Boolean) || [],
-            district: t.district || districts.find((d) => d.code === t.district_code)!,
-          }));
+        if (!error && data) {
+          const formatted = data.map(formatTechnician);
           setTechnicians(formatted);
         }
-      } catch {
-        // Fallback to demoTechnicians
+      } catch (err) {
+        console.error('Error loading published technicians:', err);
       }
     }
 

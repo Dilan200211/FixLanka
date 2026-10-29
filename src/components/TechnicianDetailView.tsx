@@ -2,24 +2,39 @@
 
 import { useEffect, useState } from 'react';
 import { TechnicianProfile } from '@/components/TechnicianProfile';
-import { getDemoTechnician } from '@/lib/demo-data';
-import { districts } from '@/lib/districts';
-import { createClient } from '@/lib/supabase/client';
+import { formatTechnician } from '@/lib/technician-format';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import type { TechnicianWithServices } from '@/lib/types';
 import { useI18n } from '@/lib/i18n';
 import Link from 'next/link';
 import { ArrowLeft, UserX, Loader2 } from 'lucide-react';
 
-export function TechnicianDetailView({ id }: { id: string }) {
+interface TechnicianDetailViewProps {
+  id: string;
+  initialTechnician?: TechnicianWithServices | null;
+}
+
+export function TechnicianDetailView({ id, initialTechnician }: TechnicianDetailViewProps) {
   const { t } = useI18n();
   const [technician, setTechnician] = useState<TechnicianWithServices | null>(
-    () => getDemoTechnician(id) || null
+    initialTechnician ?? null
   );
-  const [loading, setLoading] = useState(!technician);
+  const [loading, setLoading] = useState(!initialTechnician);
 
   useEffect(() => {
+    if (initialTechnician) {
+      setTechnician(initialTechnician);
+      setLoading(false);
+      return;
+    }
+
     async function fetchTech() {
       try {
+        if (!isSupabaseConfigured()) {
+          setLoading(false);
+          return;
+        }
+
         const supabase = createClient();
         const { data, error } = await supabase
           .from('technicians')
@@ -31,24 +46,24 @@ export function TechnicianDetailView({ id }: { id: string }) {
             )
           `)
           .eq('slug', id)
+          .eq('published', true)
           .maybeSingle();
 
         if (data && !error) {
-          setTechnician({
-            ...data,
-            services: data.services?.map((ts: any) => ts.category).filter(Boolean) || [],
-            district: data.district || districts.find((d) => d.code === data.district_code)!,
-          });
+          setTechnician(formatTechnician(data));
+        } else {
+          setTechnician(null);
         }
-      } catch {
-        // Fallback
+      } catch (err) {
+        console.error('Error fetching technician detail:', err);
+        setTechnician(null);
       } finally {
         setLoading(false);
       }
     }
 
     fetchTech();
-  }, [id]);
+  }, [id, initialTechnician]);
 
   if (loading) {
     return (

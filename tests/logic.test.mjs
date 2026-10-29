@@ -133,3 +133,43 @@ test('generateSlug generates clean URL-safe identifier', () => {
   const slug = generateSlug('Sunil Perera & Sons');
   assert.ok(slug.startsWith('sunil-perera-sons-'));
 });
+
+test('formatTechnician normalizes database record with joined services and district', async () => {
+  const { formatTechnician } = await import('../src/lib/technician-format.ts');
+  const rawDbRecord = {
+    id: 'tech-123',
+    name: 'Dilshan Kumara',
+    slug: 'dilshan-kumara',
+    phone: '0771234567',
+    whatsapp_number: '0771234567',
+    description_si: 'විදුලි කාර්මික',
+    description_en: 'Electrician',
+    district_code: 'CMB',
+    town: 'Nugegoda',
+    indicative_price_lkr: 2500,
+    published: true,
+    verified: true,
+    is_demo: false,
+    services: [
+      {
+        category: {
+          id: 'cat-1',
+          slug: 'electrical',
+          name_si: 'විදුලි',
+          name_en: 'Electrical',
+          active: true,
+        },
+      },
+    ],
+  };
+
+  const formatted = formatTechnician(rawDbRecord);
+  assert.equal(formatted.id, 'tech-123');
+  assert.equal(formatted.name, 'Dilshan Kumara');
+  assert.equal(formatted.services.length, 1);
+  assert.equal(formatted.services[0].slug, 'electrical');
+  assert.equal(formatted.district.name_en, 'Colombo');
+  assert.equal(formatted.verified, true);
+  assert.equal(formatted.is_demo, false);
+});
+
