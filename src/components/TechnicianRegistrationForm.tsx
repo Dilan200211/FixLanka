@@ -26,8 +26,6 @@ import {
 import { useI18n } from '@/lib/i18n';
 import { districts, getDistrictName } from '@/lib/districts';
 import { serviceCategories, getCategoryName } from '@/lib/categories';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 
 const iconMap: Record<string, LucideIcon> = {
   Wrench,
@@ -149,11 +147,8 @@ export function TechnicianRegistrationForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
-      <Header />
-
-      <main className="flex-1 py-10 px-4">
-        <div className="max-w-2xl mx-auto">
+    <main className="min-h-full py-10 px-4 bg-[#F8FAFC]">
+      <div className="max-w-2xl mx-auto">
           {/* Breadcrumb back */}
           <div className="mb-6">
             <Link
@@ -492,8 +487,5 @@ export function TechnicianRegistrationForm() {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
-  );
-}
+    );
+  }
