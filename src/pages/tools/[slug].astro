@@ -1,0 +1,74 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { getAllTools } from '../../data/tools';
+import type { ToolDefinition } from '../../types/tool';
+
+// 1-3. Privacy & Metadata
+import ExifViewer from '../../features/metadata/ExifViewer';
+import ExifCleaner from '../../features/metadata/ExifCleaner';
+import AiMetadataInspector from '../../features/metadata/AiMetadataInspector';
+
+// 4-6. Image Tools
+import ImageCompressor from '../../features/image/ImageCompressor';
+import ImageResizer from '../../features/image/ImageResizer';
+import ImageConverter from '../../features/image/ImageConverter';
+
+// 7-9. PDF Tools
+import PdfMerger from '../../features/pdf/PdfMerger';
+import PdfSplitter from '../../features/pdf/PdfSplitter';
+import PdfCompressor from '../../features/pdf/PdfCompressor';
+
+// 10-11. Media Tools
+import VideoToGif from '../../features/media/VideoToGif';
+import AudioExtractor from '../../features/media/AudioExtractor';
+
+// 12-15. AI, Dev & SEO
+import PromptOptimizer from '../../features/ai/PromptOptimizer';
+import JsonFormatter from '../../features/developer/JsonFormatter';
+import Base64Tool from '../../features/developer/Base64Tool';
+import MetaTagGenerator from '../../features/seo/MetaTagGenerator';
+
+// 16-20. Social, Security & Everyday
+import SocialImageResizer from '../../features/social/SocialImageResizer';
+import SocialPostPreview from '../../features/social/SocialPostPreview';
+import PasswordGenerator from '../../features/security/PasswordGenerator';
+import QrCodeGenerator from '../../features/everyday/QrCodeGenerator';
+import WordCounter from '../../features/everyday/WordCounter';
+
+export function getStaticPaths() {
+  const tools = getAllTools();
+  return tools.map((tool) => ({
+    params: { slug: tool.slug },
+    props: { tool },
+  }));
+}
+
+interface Props {
+  tool: ToolDefinition;
+}
+
+const { tool } = Astro.props;
+---
+
+<ToolLayout tool={tool}>
+  {tool.slug === 'exif-metadata-viewer' && <ExifViewer client:load />}
+  {tool.slug === 'exif-privacy-cleaner' && <ExifCleaner client:load />}
+  {tool.slug === 'ai-metadata-inspector' && <AiMetadataInspector client:load />}
+  {tool.slug === 'image-compressor' && <ImageCompressor client:load />}
+  {tool.slug === 'image-resizer' && <ImageResizer client:load />}
+  {tool.slug === 'image-converter' && <ImageConverter client:load />}
+  {tool.slug === 'pdf-merger' && <PdfMerger client:load />}
+  {tool.slug === 'pdf-splitter' && <PdfSplitter client:load />}
+  {tool.slug === 'pdf-compressor' && <PdfCompressor client:load />}
+  {tool.slug === 'video-to-gif' && <VideoToGif client:load />}
+  {tool.slug === 'audio-extractor' && <AudioExtractor client:load />}
+  {tool.slug === 'ai-prompt-optimizer' && <PromptOptimizer client:load />}
+  {tool.slug === 'json-formatter' && <JsonFormatter client:load />}
+  {tool.slug === 'base64-encoder-decoder' && <Base64Tool client:load />}
+  {tool.slug === 'meta-tag-generator' && <MetaTagGenerator client:load />}
+  {tool.slug === 'social-media-image-resizer' && <SocialImageResizer client:load />}
+  {tool.slug === 'social-post-preview' && <SocialPostPreview client:load />}
+  {tool.slug === 'password-generator' && <PasswordGenerator client:load />}
+  {tool.slug === 'qr-code-generator' && <QrCodeGenerator client:load />}
+  {tool.slug === 'word-counter' && <WordCounter client:load />}
+</ToolLayout>

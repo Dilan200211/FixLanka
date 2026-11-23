@@ -1,0 +1,75 @@
+---
+import ThemeToggle from '../common/ThemeToggle';
+import SearchModal from '../search/SearchModal';
+import { MAIN_NAV } from '../../data/navigation';
+---
+
+<header class="sticky top-0 z-40 w-full backdrop-blur-md bg-dark-bg/80 border-b border-dark-border">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    {/* Brand Logo */}
+    <a href="/" class="flex items-center gap-2.5 group">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+        <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+          FixLanka <span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">TOOLS</span>
+        </span>
+      </div>
+    </a>
+
+    {/* Desktop Navigation Links */}
+    <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+      {MAIN_NAV.map((item) => (
+        <a
+          href={item.href}
+          class="hover:text-emerald-400 transition-colors"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    {/* Search & Actions */}
+    <div class="flex items-center gap-3">
+      <SearchModal client:idle />
+      <ThemeToggle client:idle />
+
+      {/* Mobile Menu Button */}
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        class="md:hidden p-2 rounded-lg border border-slate-700/60 bg-slate-800/50 text-slate-300 hover:text-white"
+        aria-label="Open mobile navigation"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  {/* Mobile Dropdown Menu */}
+  <div id="mobile-menu" class="hidden md:hidden border-b border-dark-border bg-dark-surface px-4 py-4 space-y-3">
+    {MAIN_NAV.map((item) => (
+      <a
+        href={item.href}
+        class="block py-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
+      >
+        {item.label}
+      </a>
+    ))}
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (btn && menu) {
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+  }
+</script>

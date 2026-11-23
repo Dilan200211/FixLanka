@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy — FixLanka Tools"
+  description="FixLanka Tools is engineered with privacy at its core. Read our complete privacy disclosure regarding client-side processing and zero file retention."
+  canonicalUrl="https://fixlanka.com/privacy"
+>
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+    <header class="space-y-3">
+      <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+        Legal Disclosure
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        Privacy Policy
+      </h1>
+      <p class="text-xs text-slate-400">
+        Effective Date: November 2026 • Last Updated: November 2026
+      </p>
+    </header>
+
+    <div class="space-y-6 text-sm text-slate-300 leading-relaxed">
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-bold text-white">1. Core Privacy Commitment</h2>
+        <p>
+          At FixLanka Tools (<a href="https://fixlanka.com" class="text-emerald-400 underline">https://fixlanka.com</a>), your privacy is our foundational architectural constraint. We believe user files should never be transferred to third-party servers when your device can handle the processing locally.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-white">2. In-Browser Local Processing</h2>
+        <p>
+          All standard file-handling tools on FixLanka Tools—including the EXIF Metadata Viewer, EXIF Privacy Cleaner, AI Metadata Inspector, Image Compressor, Image Resizer, Image Converter, PDF Merger, PDF Splitter, and PDF Compressor—execute entirely within your web browser's memory using standard JavaScript, Canvas APIs, and WebAssembly.
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs text-slate-400">
+          <li>Your files are never transmitted to our web servers.</li>
+          <li>Your files are never stored, logged, or cached on any remote storage disk.</li>
+          <li>Temporary buffers generated during processing reside strictly in your computer's RAM and are released immediately upon clearing or closing the tab.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-white">3. Information We Do Not Collect</h2>
+        <p>
+          We do not require user account registration, passwords, email addresses, phone numbers, or payment methods for any tool. We do not inspect, log, or read your file contents, text snippets, or generated passwords.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-white">4. Local Storage Usage</h2>
+        <p>
+          We use browser <code>localStorage</code> exclusively to remember your visual theme preference (Light or Dark mode). No tracking cookies, advertising beacons, or third-party behavioral profiling scripts are embedded.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-white">5. Hosting & CDN Infrastructure</h2>
+        <p>
+          FixLanka Tools is deployed statically via Cloudflare Pages. Cloudflare may process standard web server logs (such as IP addresses, browser user agent, and request timestamps) strictly for DDoS mitigation, security anomaly detection, and global CDN routing, in compliance with Cloudflare's privacy policy.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-white">6. Changes to this Policy</h2>
+        <p>
+          If future premium or distributed computation tools are introduced that require external API communication, they will be explicitly designated with a clear disclosure prior to any file transmission.
+        </p>
+      </section>
+
+      <section class="p-5 rounded-xl bg-dark-surface border border-dark-border text-xs text-slate-400">
+        <p class="font-semibold text-slate-200 mb-1">Contact for Privacy Questions</p>
+        <p>For questions or feedback regarding our privacy practices, reach us via our <a href="/contact" class="text-emerald-400 underline">Contact Page</a>.</p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
