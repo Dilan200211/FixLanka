@@ -6,11 +6,14 @@ export default {
     extend: {
       colors: {
         dark: {
-          bg: '#0b0d11',
-          surface: '#12161f',
-          card: '#181d28',
-          border: '#242b38',
-          muted: '#8b949e',
+          bg: '#0f0f10',
+          surface: '#141415',
+          card: '#19191b',
+          raised: '#232325',
+          border: 'rgba(237, 237, 237, 0.08)',
+          muted: '#85858b',
+          text: '#ededed',
+          secondary: '#a1a1a6',
         },
         brand: {
           50: '#ecfdf5',

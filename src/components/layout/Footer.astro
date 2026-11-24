@@ -6,35 +6,35 @@ import { getFeaturedTools } from '../../data/tools';
 const featuredTools = getFeaturedTools().slice(0, 6);
 ---
 
-<footer class="bg-dark-surface border-t border-dark-border text-slate-400 mt-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+<footer class="bg-dark-bg border-t border-dark-border text-neutral-400 mt-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
       {/* Brand Column */}
       <div class="space-y-4 md:col-span-1">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center">
-            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center text-emerald-400">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
             </svg>
           </div>
-          <span class="text-base font-bold text-white tracking-tight">FixLanka Tools</span>
+          <span class="text-sm font-medium text-neutral-100 tracking-tight">FixLanka Tools</span>
         </div>
-        <p class="text-xs leading-relaxed text-slate-400">
-          High-performance, privacy-first online utilities for creators, developers, and privacy advocates worldwide. Files stay securely on your device.
+        <p class="text-xs leading-relaxed text-neutral-400">
+          In-browser utilities for files, images, PDFs, and metadata. Client-side execution with zero network transmission.
         </p>
-        <div class="flex items-center gap-2 pt-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-xs text-slate-400">Client-side Sandbox • Zero Uploads</span>
+        <div class="flex items-center gap-2 pt-1 text-xs text-neutral-500 font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>Local sandbox • 0 B uploaded</span>
         </div>
       </div>
 
       {/* Categories Column */}
       <div>
-        <h3 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-3">Tool Categories</h3>
+        <h3 class="text-xs font-medium text-neutral-200 mb-3">Tool categories</h3>
         <ul class="space-y-2 text-xs">
           {CATEGORY_LIST.slice(0, 6).map((cat) => (
             <li>
-              <a href={`/categories/${cat.slug}`} class="hover:text-emerald-400 transition-colors">
+              <a href={`/categories/${cat.slug}`} class="hover:text-neutral-100 transition-colors">
                 {cat.name}
               </a>
             </li>
@@ -44,11 +44,11 @@ const featuredTools = getFeaturedTools().slice(0, 6);
 
       {/* Featured Tools Column */}
       <div>
-        <h3 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-3">Popular Utilities</h3>
+        <h3 class="text-xs font-medium text-neutral-200 mb-3">Popular utilities</h3>
         <ul class="space-y-2 text-xs">
           {featuredTools.map((tool) => (
             <li>
-              <a href={`/tools/${tool.slug}`} class="hover:text-emerald-400 transition-colors">
+              <a href={`/tools/${tool.slug}`} class="hover:text-neutral-100 transition-colors">
                 {tool.name}
               </a>
             </li>
@@ -58,31 +58,31 @@ const featuredTools = getFeaturedTools().slice(0, 6);
 
       {/* Legal & Trust Column */}
       <div>
-        <h3 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-3">Legal & Trust</h3>
+        <h3 class="text-xs font-medium text-neutral-200 mb-3">Legal and trust</h3>
         <ul class="space-y-2 text-xs">
           {FOOTER_LEGAL_NAV.map((link) => (
             <li>
-              <a href={link.href} class="hover:text-emerald-400 transition-colors">
+              <a href={link.href} class="hover:text-neutral-100 transition-colors">
                 {link.label}
               </a>
             </li>
           ))}
         </ul>
-        <div class="mt-6 pt-4 border-t border-slate-800/60">
-          <p class="text-[11px] text-slate-500">
-            FixLanka Tools is free, privacy-first software built for global access.
+        <div class="mt-6 pt-4 border-t border-dark-border">
+          <p class="text-xs text-neutral-500">
+            Free, open-access utilities with memory-safe browser execution.
           </p>
         </div>
       </div>
     </div>
 
     {/* Bottom Copyright */}
-    <div class="mt-12 pt-6 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-      <p>© {new Date().getFullYear()} FixLanka Tools. All rights reserved.</p>
+    <div class="mt-12 pt-6 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+      <p>© {new Date().getFullYear()} FixLanka Tools</p>
       <div class="flex items-center gap-6">
-        <a href="/privacy" class="hover:text-slate-400">Privacy Policy</a>
-        <a href="/terms" class="hover:text-slate-400">Terms of Service</a>
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-slate-400">GitHub</a>
+        <a href="/privacy" class="hover:text-neutral-300 transition-colors">Privacy policy</a>
+        <a href="/terms" class="hover:text-neutral-300 transition-colors">Terms of service</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-300 transition-colors">Source</a>
       </div>
     </div>
   </div>

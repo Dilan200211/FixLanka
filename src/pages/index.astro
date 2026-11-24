@@ -1,188 +1,379 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ShowcaseToolCard from '../components/cards/ShowcaseToolCard.astro';
 import ToolCard from '../components/cards/ToolCard.astro';
 import CategoryCard from '../components/cards/CategoryCard.astro';
+import HeroSearch from '../components/search/HeroSearch';
 import { CATEGORY_LIST } from '../data/categories';
-import { getAllTools, getFeaturedTools, getToolsByCategory } from '../data/tools';
+import { getAllTools, getToolsByCategory } from '../data/tools';
 import { GLOBAL_FAQS } from '../data/faq';
 
 const allTools = getAllTools();
-const featuredTools = getFeaturedTools();
-const recentTools = allTools.slice(0, 8);
 ---
 
 <BaseLayout
-  title="FixLanka Tools — Free, Privacy-First Online Toolbox"
-  description="Free online tools for images, PDFs, privacy metadata, developer utilities, and AI creators. 100% in-browser processing with zero server uploads."
+  title="FixLanka Tools — Fast, In-Browser Utilities for Files & Privacy"
+  description="Free in-browser utilities for image compression, PDF management, metadata inspection, and developer tools. 100% private with zero server uploads."
 >
-  {/* 1. Hero Section */}
-  <section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28 border-b border-dark-border">
-    {/* Subtle Background Glow */}
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-500/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
+  {/* 1. Hero Section: Asymmetric Split Layout matching user's composition */}
+  <section class="border-b border-dark-border pt-12 pb-16 sm:pt-16 sm:pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        
+        {/* Left Column: Headline, Copy & Interactive Search */}
+        <div class="lg:col-span-7 space-y-6">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-dark-card border border-dark-border text-xs font-mono text-neutral-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Zero server uploads • 100% local sandbox</span>
+            </span>
+          </div>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        Zero Server Uploads • 100% Client-Side Sandbox
-      </div>
+          <div class="space-y-3">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-neutral-100 leading-[1.08]">
+              FixLanka Tools
+            </h1>
+            <p class="text-lg sm:text-xl text-neutral-300 font-normal">
+              In-browser utilities for files, privacy, and media.
+            </p>
+            <p class="text-sm sm:text-base text-neutral-400 max-w-xl leading-relaxed">
+              Fast, privacy-first online tools for developers, creators, and professionals worldwide. Everything executes directly inside your browser memory with zero tracking.
+            </p>
+          </div>
 
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-        Free Online Tools. <br />
-        <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-          No Hassle.
-        </span>
-      </h1>
-
-      <p class="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 leading-relaxed">
-        Powerful tools for files, images, privacy, productivity, and creativity. Process everything directly in your browser without sign-up or data tracking.
-      </p>
-
-      {/* Hero Quick Search / Action Buttons */}
-      <div class="pt-4 flex flex-wrap items-center justify-center gap-3">
-        <a
-          href="#popular"
-          class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-950/40"
-        >
-          Explore Popular Tools
-        </a>
-        <a
-          href="#categories"
-          class="px-5 py-2.5 rounded-xl bg-dark-card border border-dark-border hover:border-slate-600 text-slate-300 hover:text-white font-medium text-sm transition-all"
-        >
-          Browse 10 Categories
-        </a>
-      </div>
-
-      {/* Feature highlights pill bar */}
-      <div class="pt-8 flex flex-wrap justify-center items-center gap-6 text-xs text-slate-400">
-        <div class="flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          No Registration
+          {/* Integrated Tactile Hero Search Bar */}
+          <div class="pt-2">
+            <HeroSearch client:load />
+            <div class="mt-2.5 flex items-center gap-4 text-xs font-mono text-neutral-500">
+              <span class="flex items-center gap-1">
+                <span>Popular:</span>
+                <a href="/tools/exif-privacy-cleaner" class="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">exif cleaner</a>,
+                <a href="/tools/image-compressor" class="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">compress</a>,
+                <a href="/tools/pdf-merger" class="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">pdf tools</a>
+              </span>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          Local Memory Execution
+
+        {/* Right Column: Unslopped Precision Workbench Visual */}
+        <div class="lg:col-span-5">
+          <div class="rounded-2xl border border-dark-border bg-dark-card overflow-hidden shadow-2xl">
+            {/* Console Title Bar */}
+            <div class="px-4 py-3 bg-dark-bg/90 border-b border-dark-border flex items-center justify-between text-xs font-mono text-neutral-400">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
+                <span class="ml-1 text-neutral-300">local-memory-sandbox</span>
+              </div>
+              <span class="text-emerald-400 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>Active</span>
+              </span>
+            </div>
+
+            {/* Architecture Telemetry Display */}
+            <div class="p-5 space-y-4 font-mono text-xs">
+              <div class="p-3.5 rounded-xl bg-dark-surface border border-dark-border space-y-2">
+                <div class="flex items-center justify-between text-neutral-500">
+                  <span>NETWORK ISOLATION</span>
+                  <span class="text-emerald-400">0 B Uploaded</span>
+                </div>
+                <div class="text-sm text-neutral-200 font-medium">
+                  Client-Side WebAssembly & Canvas
+                </div>
+                <div class="text-neutral-400 text-[11px] leading-relaxed">
+                  Files load directly into volatile RAM. No outbound socket or HTTP payload is ever created.
+                </div>
+              </div>
+
+              {/* Execution telemetry rows */}
+              <div class="space-y-2 pt-1 text-neutral-400">
+                <div class="flex items-center justify-between py-1 border-b border-dark-border/60">
+                  <span class="text-neutral-500">Target Environment:</span>
+                  <span class="text-neutral-200">Global Web Browser (W3C)</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-dark-border/60">
+                  <span class="text-neutral-500">Security Model:</span>
+                  <span class="text-emerald-400">Strict Same-Origin / Offline</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-dark-border/60">
+                  <span class="text-neutral-500">Crypto Engine:</span>
+                  <span class="text-neutral-200">WebCrypto API (Native)</span>
+                </div>
+                <div class="flex items-center justify-between py-1">
+                  <span class="text-neutral-500">Origin & Craft:</span>
+                  <span class="text-neutral-300">Built in Sri Lanka for the World</span>
+                </div>
+              </div>
+
+              {/* Memory clean status */}
+              <div class="pt-2 text-center text-[11px] text-neutral-500">
+                Buffers are purged immediately upon tab close
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-          </svg>
-          Forever Free
+
+      </div>
+    </div>
+  </section>
+
+  {/* 2. Metrics Bar: 4 quiet, verified technical metrics */}
+  <section class="border-b border-dark-border bg-dark-bg/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div class="p-4 rounded-xl bg-dark-card border border-dark-border flex items-center gap-3.5">
+          <div class="w-9 h-9 rounded-lg bg-dark-surface border border-dark-border flex items-center justify-center text-emerald-400 flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-neutral-100 tabular-nums">20+ Tools</div>
+            <div class="text-xs text-neutral-400">Ready in browser</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-dark-card border border-dark-border flex items-center gap-3.5">
+          <div class="w-9 h-9 rounded-lg bg-dark-surface border border-dark-border flex items-center justify-center text-emerald-400 flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-neutral-100 tabular-nums">0 B Uploaded</div>
+            <div class="text-xs text-neutral-400">100% private sandbox</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-dark-card border border-dark-border flex items-center gap-3.5">
+          <div class="w-9 h-9 rounded-lg bg-dark-surface border border-dark-border flex items-center justify-center text-emerald-400 flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-neutral-100 tabular-nums">10 Categories</div>
+            <div class="text-xs text-neutral-400">Structured utilities</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-dark-card border border-dark-border flex items-center gap-3.5">
+          <div class="w-9 h-9 rounded-lg bg-dark-surface border border-dark-border flex items-center justify-center text-emerald-400 flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-neutral-100">Global Access</div>
+            <div class="text-xs text-neutral-400">Free without sign-up</div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  {/* 3. Popular Tools Section */}
-  <section id="popular" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+  {/* 3. "Our Tools" Grid matching user's 2x5 showcase layout */}
+  <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
     <div class="flex items-end justify-between">
       <div>
-        <h2 class="text-2xl font-bold tracking-tight text-white">Popular Tools</h2>
-        <p class="text-xs text-slate-400 mt-1">Most frequently used utilities by developers and creators</p>
+        <h2 class="text-2xl font-medium tracking-tight text-neutral-100">Our Tools</h2>
+        <p class="text-xs text-neutral-400 mt-1">Explore our growing collection of privacy-first utilities</p>
       </div>
-      <a href="#all-tools" class="text-xs font-semibold text-emerald-400 hover:underline">
-        View all 20 tools →
+      <a
+        href="#all-tools"
+        class="text-xs font-medium text-neutral-400 hover:text-neutral-100 transition-colors flex items-center gap-1"
+      >
+        <span>View all 20 tools</span>
+        <span>→</span>
       </a>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {featuredTools.map((tool) => (
-        <ToolCard tool={tool} />
-      ))}
+    {/* 2-row x 5-column (or responsive) grid matching user mockup */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+      <ShowcaseToolCard
+        title="AI Metadata"
+        description="Inspect C2PA & AI markers"
+        href="/tools/ai-metadata-inspector"
+        iconType="cpu"
+      />
+      <ShowcaseToolCard
+        title="Image Compressor"
+        description="Reduce file size locally"
+        href="/tools/image-compressor"
+        iconType="compress"
+      />
+      <ShowcaseToolCard
+        title="Audio Extractor"
+        description="Extract audio from video"
+        href="/tools/audio-extractor"
+        iconType="audio"
+      />
+      <ShowcaseToolCard
+        title="Video to GIF"
+        description="Canvas video converter"
+        href="/tools/video-to-gif"
+        iconType="film"
+      />
+      <ShowcaseToolCard
+        title="PDF Tools"
+        description="Merge, split & compress"
+        href="/tools/pdf-merger"
+        iconType="pdf"
+      />
+      <ShowcaseToolCard
+        title="Privacy Cleaner"
+        description="Strip GPS & camera tags"
+        href="/tools/exif-privacy-cleaner"
+        iconType="shield"
+      />
+      <ShowcaseToolCard
+        title="Format Converter"
+        description="WebP, JPEG, PNG, AVIF"
+        href="/tools/image-converter"
+        iconType="convert"
+      />
+      <ShowcaseToolCard
+        title="JSON Formatter"
+        description="Format, validate & minify"
+        href="/tools/json-formatter"
+        iconType="code"
+      />
+      <ShowcaseToolCard
+        title="Base64 Tool"
+        description="Encode & decode text"
+        href="/tools/base64-encoder-decoder"
+        iconType="binary"
+      />
+      <ShowcaseToolCard
+        title="Password Tool"
+        description="Secure key generator"
+        href="/tools/password-generator"
+        iconType="key"
+      />
     </div>
   </section>
 
-  {/* 4. Browse Categories Section */}
-  <section id="categories" class="py-16 bg-dark-surface/50 border-y border-dark-border">
+  {/* 4. Complete Tool Directory by Category */}
+  <section id="all-tools" class="py-16 bg-dark-bg border-y border-dark-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
       <div>
-        <h2 class="text-2xl font-bold tracking-tight text-white">Browse by Category</h2>
-        <p class="text-xs text-slate-400 mt-1">Organized across 10 specialized functional domains</p>
+        <h2 class="text-2xl font-medium tracking-tight text-neutral-100">Complete tool directory</h2>
+        <p class="text-xs text-neutral-400 mt-1">All {allTools.length} utilities with zero server upload guarantee</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {CATEGORY_LIST.map((cat) => (
-          <CategoryCard
-            category={cat}
-            toolCount={getToolsByCategory(cat.id).length}
-          />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {allTools.map((tool) => (
+          <ToolCard tool={tool} />
         ))}
       </div>
     </div>
   </section>
 
-  {/* 5. All Tools Catalog */}
-  <section id="all-tools" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+  {/* 5. Browse Categories */}
+  <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
     <div>
-      <h2 class="text-2xl font-bold tracking-tight text-white">Complete Tool Directory</h2>
-      <p class="text-xs text-slate-400 mt-1">All {allTools.length} production-grade utilities ready to use</p>
+      <h2 class="text-2xl font-medium tracking-tight text-neutral-100">Browse by category</h2>
+      <p class="text-xs text-neutral-400 mt-1">Organized across 10 functional domains</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {allTools.map((tool) => (
-        <ToolCard tool={tool} />
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {CATEGORY_LIST.map((cat) => (
+        <CategoryCard
+          category={cat}
+          toolCount={getToolsByCategory(cat.id).length}
+        />
       ))}
     </div>
   </section>
 
-  {/* 6. Privacy-First Feature Explanation */}
-  <section class="py-16 bg-dark-surface/60 border-y border-dark-border">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-      <div class="text-center space-y-2">
-        <h2 class="text-2xl font-bold text-white tracking-tight">Privacy by Design</h2>
-        <p class="text-xs text-slate-400">Why thousands trust FixLanka Tools with sensitive documents</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-2">
-          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
-            1
+  {/* 6. Bottom Trust Bar & Project Support (Matching mockup bottom section) */}
+  <section class="py-12 bg-dark-surface border-t border-dark-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        {/* Left: 4 Trust Pillars */}
+        <div class="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+          <div class="space-y-1">
+            <div class="flex items-center gap-1.5 text-neutral-200 font-medium">
+              <svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <span>Safe & Private</span>
+            </div>
+            <p class="text-neutral-500">Your files remain in local RAM</p>
           </div>
-          <h3 class="text-base font-semibold text-white">No Server Uploads</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Your images, contracts, and passwords remain in your device's browser memory. Our servers never see your files.
-          </p>
+
+          <div class="space-y-1">
+            <div class="flex items-center gap-1.5 text-neutral-200 font-medium">
+              <svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+              <span>Fast & Direct</span>
+            </div>
+            <p class="text-neutral-500">Native Canvas & WebAssembly</p>
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex items-center gap-1.5 text-neutral-200 font-medium">
+              <svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v8M8 12h8" />
+              </svg>
+              <span>100% Free</span>
+            </div>
+            <p class="text-neutral-500">No subscriptions or accounts</p>
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex items-center gap-1.5 text-neutral-200 font-medium">
+              <svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+              </svg>
+              <span>Works Everywhere</span>
+            </div>
+            <p class="text-neutral-500">Any modern desktop or phone</p>
+          </div>
         </div>
 
-        <div class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-2">
-          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
-            2
+        {/* Right: Support Card (Unslopped with quiet craft) */}
+        <div class="lg:col-span-4 p-4 rounded-xl bg-dark-card border border-dark-border flex items-center justify-between gap-4">
+          <div class="min-w-0">
+            <div class="text-sm font-medium text-neutral-200">Support FixLanka</div>
+            <p class="text-xs text-neutral-400 mt-0.5">Free, open-access tools for the global web</p>
           </div>
-          <h3 class="text-base font-semibold text-white">Transparent Provenance</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            We inspect C2PA Content Credentials and EXIF tags truthfully. We never provide tools to spoof origin or evade watermarks.
-          </p>
+          <a
+            href="https://github.com/Dilan200211/FixLanka"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-3.5 py-2 rounded-lg bg-dark-raised border border-dark-border hover:border-neutral-600 text-neutral-200 text-xs font-medium transition-colors flex items-center gap-1.5 flex-shrink-0"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            <span>GitHub</span>
+          </a>
         </div>
 
-        <div class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-2">
-          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
-            3
-          </div>
-          <h3 class="text-base font-semibold text-white">Volatile Memory Cleanup</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            When you finish or refresh the page, memory buffers and temporary blob references are automatically purged from your RAM.
-          </p>
-        </div>
       </div>
     </div>
   </section>
 
-  {/* 7. Frequently Asked Questions */}
+  {/* 7. FAQ Section */}
   <section class="py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
     <div class="text-center space-y-2">
-      <h2 class="text-2xl font-bold text-white tracking-tight">Frequently Asked Questions</h2>
-      <p class="text-xs text-slate-400">Answers to common questions about how FixLanka Tools operates</p>
+      <h2 class="text-2xl font-medium text-neutral-100 tracking-tight">Frequently asked questions</h2>
+      <p class="text-xs text-neutral-400">Technical details on how our client-side utilities operate</p>
     </div>
 
-    <div class="space-y-4">
+    <div class="space-y-3">
       {GLOBAL_FAQS.map((faq) => (
-        <div class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-2">
-          <h3 class="text-sm font-semibold text-slate-100">{faq.question}</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">{faq.answer}</p>
+        <div class="p-5 rounded-xl bg-dark-card border border-dark-border space-y-2">
+          <h3 class="text-sm font-medium text-neutral-200">{faq.question}</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed">{faq.answer}</p>
         </div>
       ))}
     </div>
