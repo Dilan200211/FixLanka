@@ -7,6 +7,16 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "single-page-application"
   },
+  "routes": [
+    {
+      "pattern": "fixlanka.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.fixlanka.com",
+      "custom_domain": true
+    }
+  ],
   "vars": {
     "NODE_VERSION": "20"
   }
