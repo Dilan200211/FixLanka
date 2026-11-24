@@ -11,28 +11,28 @@ const { category, toolCount } = Astro.props;
 
 <a
   href={`/categories/${category.slug}`}
-  class="group p-5 rounded-xl bg-dark-card border border-dark-border hover:border-neutral-700 hover:bg-dark-raised/50 transition-[border-color,background-color] duration-150 flex flex-col justify-between"
+  class="group p-5 rounded-xl bg-dark-card border border-dark-border shadow-sm dark:shadow-none hover:border-brand-500/40 hover:bg-dark-raised/50 transition-[border-color,background-color] duration-150 flex flex-col justify-between"
 >
   <div>
     <div class="flex items-center justify-between mb-3">
-      <div class="w-8 h-8 rounded-lg bg-dark-raised border border-dark-border flex items-center justify-center text-emerald-400 text-xs font-mono font-medium">
+      <div class="w-8 h-8 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400 text-xs font-mono font-semibold">
         {category.name.substring(0, 2).toUpperCase()}
       </div>
-      <span class="text-xs font-mono text-neutral-500 tabular-nums">
+      <span class="text-xs font-mono text-dark-muted tabular-nums">
         {toolCount} {toolCount === 1 ? 'tool' : 'tools'}
       </span>
     </div>
 
-    <h3 class="text-[15px] font-medium text-neutral-100 group-hover:text-emerald-400 transition-colors">
+    <h3 class="text-[15px] font-semibold text-dark-text group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
       {category.name}
     </h3>
 
-    <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+    <p class="text-xs text-dark-secondary mt-1.5 leading-relaxed">
       {category.shortDescription}
     </p>
   </div>
 
-  <div class="mt-4 pt-3 border-t border-dark-border flex items-center justify-end text-xs text-neutral-400 group-hover:text-emerald-400 transition-colors">
+  <div class="mt-4 pt-3 border-t border-dark-border flex items-center justify-end text-xs text-dark-secondary group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors font-medium">
     Explore →
   </div>
 </a>

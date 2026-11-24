@@ -36,6 +36,7 @@ export default function SocialImageResizer() {
   const [outputBlob, setOutputBlob] = useState<Blob | null>(null);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFilesSelected = (files: File[]) => {
     if (files.length === 0) return;
@@ -45,11 +46,13 @@ export default function SocialImageResizer() {
     setPreviewUrl(url);
     setOutputBlob(null);
     setOutputUrl(null);
+    setError(null);
   };
 
   const handleGenerate = () => {
     if (!previewUrl || !activePreset) return;
     setProcessing(true);
+    setError(null);
 
     const img = new Image();
     img.src = previewUrl;
@@ -60,6 +63,7 @@ export default function SocialImageResizer() {
       const ctx = canvas.getContext('2d');
       if (!ctx) {
         setProcessing(false);
+        setError('Could not initialize image canvas.');
         return;
       }
 
@@ -96,6 +100,7 @@ export default function SocialImageResizer() {
         (blob) => {
           if (!blob) {
             setProcessing(false);
+            setError('Failed to render output image.');
             return;
           }
           if (outputUrl) URL.revokeObjectURL(outputUrl);
@@ -107,6 +112,10 @@ export default function SocialImageResizer() {
         'image/png',
         0.95
       );
+    };
+    img.onerror = () => {
+      setProcessing(false);
+      setError('Could not decode this image file.');
     };
   };
 
@@ -140,18 +149,18 @@ export default function SocialImageResizer() {
           <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-dark-surface border border-dark-border">
             <div className="flex items-center gap-3">
               {previewUrl && (
-                <img src={previewUrl} alt="Source" className="w-12 h-12 object-cover rounded-lg border border-slate-700" />
+                <img src={previewUrl} alt="Source" className="w-12 h-12 object-cover rounded-lg border border-dark-border" />
               )}
               <div>
-                <p className="text-sm font-semibold text-white truncate max-w-xs">{selectedFile.name}</p>
-                <p className="text-xs text-slate-400">{formatBytes(selectedFile.size)} • Original Image</p>
+                <p className="text-sm font-semibold text-dark-text truncate max-w-xs">{selectedFile.name}</p>
+                <p className="text-xs text-dark-secondary">{formatBytes(selectedFile.size)} • Original Image</p>
               </div>
             </div>
 
             <button
               type="button"
               onClick={handleReset}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-raised hover:bg-dark-raised text-dark-secondary transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Choose Different Image
             </button>
@@ -159,7 +168,7 @@ export default function SocialImageResizer() {
 
           {/* Social Platform Presets Grid */}
           <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4">
-            <h3 className="font-bold text-slate-200 uppercase tracking-wider">Select Platform Preset</h3>
+            <h3 className="font-bold text-dark-text uppercase tracking-wider">Select Platform Preset</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
               {SOCIAL_PRESETS.map((preset) => (
                 <button
@@ -171,13 +180,13 @@ export default function SocialImageResizer() {
                   }}
                   className={`p-3 rounded-lg border text-left transition-all ${
                     activePreset.id === preset.id
-                      ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 font-semibold'
-                      : 'bg-dark-card border-slate-700/60 text-slate-300 hover:border-slate-500'
+                      ? 'bg-brand-500/15 border-brand-500 text-brand-600 dark:text-brand-400 font-semibold'
+                      : 'bg-dark-card border-dark-border text-dark-secondary hover:border-brand-500/40'
                   }`}
                 >
-                  <p className="text-[10px] text-slate-400 uppercase tracking-wider">{preset.platform}</p>
-                  <p className="text-xs font-medium text-white truncate mt-0.5">{preset.name}</p>
-                  <p className="text-[11px] font-mono text-slate-400 mt-1">
+                  <p className="text-[10px] text-dark-secondary uppercase tracking-wider">{preset.platform}</p>
+                  <p className="text-xs font-medium text-dark-text truncate mt-0.5">{preset.name}</p>
+                  <p className="text-[11px] font-mono text-dark-secondary mt-1">
                     {preset.width} × {preset.height}
                   </p>
                 </button>
@@ -185,17 +194,17 @@ export default function SocialImageResizer() {
             </div>
 
             {/* Fit Mode & Background Bar */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-dark-border">
               <div>
-                <label className="block text-slate-300 font-medium mb-1.5">Fitting Technique</label>
+                <label className="block text-dark-secondary font-medium mb-1.5">Fitting Technique</label>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setFitMode('cover')}
                     className={`flex-1 py-2 px-3 rounded-lg border font-medium ${
                       fitMode === 'cover'
-                        ? 'bg-emerald-600 text-white border-emerald-500'
-                        : 'bg-dark-card border-slate-700 text-slate-300'
+                        ? 'bg-brand-600 text-white border-brand-500'
+                        : 'bg-dark-card border-dark-border text-dark-secondary'
                     }`}
                   >
                     Cover Crop (Fill Canvas)
@@ -205,8 +214,8 @@ export default function SocialImageResizer() {
                     onClick={() => setFitMode('contain')}
                     className={`flex-1 py-2 px-3 rounded-lg border font-medium ${
                       fitMode === 'contain'
-                        ? 'bg-emerald-600 text-white border-emerald-500'
-                        : 'bg-dark-card border-slate-700 text-slate-300'
+                        ? 'bg-brand-600 text-white border-brand-500'
+                        : 'bg-dark-card border-dark-border text-dark-secondary'
                     }`}
                   >
                     Contain (No Cropping)
@@ -216,15 +225,15 @@ export default function SocialImageResizer() {
 
               {fitMode === 'contain' && (
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1.5">Padding Background Color</label>
+                  <label className="block text-dark-secondary font-medium mb-1.5">Padding Background Color</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={bgColor}
                       onChange={(e) => setBgColor(e.target.value)}
-                      className="w-8 h-8 rounded border border-slate-700 bg-transparent cursor-pointer"
+                      className="w-8 h-8 rounded border border-dark-border bg-transparent cursor-pointer"
                     />
-                    <span className="font-mono text-slate-300 uppercase">{bgColor}</span>
+                    <span className="font-mono text-dark-secondary uppercase">{bgColor}</span>
                   </div>
                 </div>
               )}
@@ -234,7 +243,7 @@ export default function SocialImageResizer() {
               type="button"
               disabled={processing}
               onClick={handleGenerate}
-              className="w-full py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 mt-2"
+              className="w-full py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 mt-2"
             >
               {processing ? (
                 <>
@@ -249,15 +258,21 @@ export default function SocialImageResizer() {
             </button>
           </div>
 
+          {error && (
+            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+              {error}
+            </div>
+          )}
+
           {/* Results Output */}
           {outputBlob && outputUrl && (
-            <div className="p-6 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-4">
+            <div className="p-6 rounded-xl bg-emerald-950/20 border border-brand-500/30 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-emerald-400" /> Ready for {activePreset.platform}!
+                  <h4 className="text-sm font-bold text-dark-text flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-brand-600 dark:text-brand-400" /> Ready for {activePreset.platform}!
                   </h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-dark-secondary mt-0.5">
                     {activePreset.name} • {activePreset.width} × {activePreset.height} px • {formatBytes(outputBlob.size)}
                   </p>
                 </div>
@@ -265,13 +280,13 @@ export default function SocialImageResizer() {
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
+                  className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
                 >
                   <Download className="w-4 h-4" /> Download Graphic
                 </button>
               </div>
 
-              <div className="flex justify-center p-3 bg-black/40 rounded-xl border border-slate-800">
+              <div className="flex justify-center p-3 bg-black/40 rounded-xl border border-dark-border">
                 <img src={outputUrl} alt="Output" className="max-h-72 rounded object-contain shadow" />
               </div>
             </div>

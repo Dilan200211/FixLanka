@@ -2,23 +2,23 @@ import type { FAQItem } from '../types/tool';
 
 export const GLOBAL_FAQS: FAQItem[] = [
   {
-    question: 'Are my files uploaded to your servers?',
-    answer: 'No. FixLanka Tools is built on a privacy-first, client-side architecture. Your files (images, PDFs, videos, and texts) are processed directly in your browser memory using HTML5 Canvas, Web Workers, and WebAssembly. No file data is sent to our servers by default.'
+    question: 'Are my photos or documents uploaded to your servers?',
+    answer: 'No, never. FixLanka operates completely inside your web browser. Your photos, PDFs, and files are processed directly on your phone or computer. Nothing is ever uploaded to the internet or saved on our servers.'
   },
   {
-    question: 'Is FixLanka Tools free to use?',
-    answer: 'Yes! FixLanka Tools is 100% free with no registration, no subscriptions, and no hidden paywalls.'
+    question: 'Is FixLanka Tools completely free to use?',
+    answer: 'Yes! FixLanka Tools is 100% free with no sign-up, no email registration, and no hidden subscriptions or paywalls.'
   },
   {
     question: 'What are the file size limits?',
-    answer: 'Because processing occurs in your local browser memory, file limits are tailored to maintain peak device performance: images up to 30-50 MB, PDFs up to 40-50 MB, and videos up to 100 MB.'
+    answer: 'Because your device processes everything locally, limits are designed to keep your phone or laptop running fast and smooth: photos up to 50 MB, PDFs up to 50 MB, and video clips up to 100 MB.'
   },
   {
     question: 'Can I use FixLanka Tools on my phone or tablet?',
-    answer: 'Absolutely. Every tool is responsive and optimized for mobile touchscreens, tablets, and desktop workstations without horizontal scrolling.'
+    answer: 'Yes! Every tool works seamlessly on iPhone, Android, iPads, tablets, and desktop computers right inside your standard web browser.'
   },
   {
-    question: 'Does FixLanka Tools inspect or remove C2PA Content Credentials?',
-    answer: 'Our AI Metadata & C2PA Inspector transparently reveals embedded provenance manifests. Our privacy cleaner scrubs standard EXIF data (like GPS coordinates) while clearly alerting you when signed credentials would be affected. We do not provide tools to evade or defeat provenance watermarks.'
+    question: 'How does the Photo Privacy tool protect me?',
+    answer: 'When you take pictures with your phone, private GPS location coordinates and camera details are secretly stored inside the photo. Our privacy tool cleans away that hidden location data so you can safely share photos with friends and on social media.'
   }
 ];

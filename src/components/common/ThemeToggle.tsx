@@ -5,15 +5,7 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState<boolean>(true);
 
   useEffect(() => {
-    // Check initial theme from document class or localStorage
-    const saved = localStorage.getItem('theme');
-    if (saved === 'light') {
-      setIsDark(false);
-      document.documentElement.classList.remove('dark');
-    } else {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
-    }
+    setIsDark(document.documentElement.classList.contains('dark'));
   }, []);
 
   const toggleTheme = () => {
@@ -32,11 +24,11 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="p-2 rounded-lg border border-slate-700/60 bg-slate-800/50 hover:bg-slate-700/60 text-slate-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+      className="p-2 rounded-lg border border-dark-border bg-dark-card hover:bg-dark-raised text-dark-secondary hover:text-dark-text transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/40"
       aria-label="Toggle visual theme"
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-300" />}
+      {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-dark-secondary" />}
     </button>
   );
 }

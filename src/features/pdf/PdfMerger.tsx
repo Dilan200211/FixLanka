@@ -21,6 +21,7 @@ export default function PdfMerger() {
 
   const handleFilesSelected = async (files: File[]) => {
     setError(null);
+    setMergedBlob(null);
     setLoading(true);
 
     try {
@@ -28,7 +29,7 @@ export default function PdfMerger() {
       for (const file of files) {
         try {
           const buffer = await file.arrayBuffer();
-          const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: false });
+          const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
           newItems.push({
             id: Math.random().toString(36).substring(7),
             file,
@@ -37,7 +38,7 @@ export default function PdfMerger() {
           });
         } catch (e: any) {
           if (e.message?.includes('encrypt') || e.message?.includes('password')) {
-            setError(`File "${file.name}" is password-protected or encrypted. Please decrypt before merging.`);
+            setError(`File "${file.name}" is password-protected. Please unlock it before merging.`);
           } else {
             setError(`Could not read "${file.name}". Ensure it is a valid, uncorrupted PDF document.`);
           }
@@ -51,6 +52,7 @@ export default function PdfMerger() {
 
   const moveUp = (index: number) => {
     if (index === 0) return;
+    setMergedBlob(null);
     setDocList((prev) => {
       const next = [...prev];
       const temp = next[index - 1];
@@ -62,6 +64,7 @@ export default function PdfMerger() {
 
   const moveDown = (index: number) => {
     if (index === docList.length - 1) return;
+    setMergedBlob(null);
     setDocList((prev) => {
       const next = [...prev];
       const temp = next[index + 1];
@@ -72,6 +75,7 @@ export default function PdfMerger() {
   };
 
   const removeItem = (id: string) => {
+    setMergedBlob(null);
     setDocList((prev) => prev.filter((item) => item.id !== id));
   };
 
@@ -89,13 +93,13 @@ export default function PdfMerger() {
 
       for (const item of docList) {
         const buffer = await item.file.arrayBuffer();
-        const srcDoc = await PDFDocument.load(buffer);
+        const srcDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
         const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
         copiedPages.forEach((page) => mergedPdf.addPage(page));
       }
 
       const mergedBytes = await mergedPdf.save();
-      const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+      const blob = new Blob([mergedBytes.slice()], { type: 'application/pdf' });
       setMergedBlob(blob);
     } catch (err: any) {
       console.error('Merge error:', err);
@@ -135,7 +139,7 @@ export default function PdfMerger() {
       )}
 
       {loading && (
-        <div className="p-4 text-center text-slate-400 text-xs">
+        <div className="p-4 text-center text-dark-secondary text-xs">
           Reading PDF page structures in browser memory...
         </div>
       )}
@@ -144,15 +148,15 @@ export default function PdfMerger() {
       {docList.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-dark-secondary flex items-center gap-2">
+              <FileText className="w-4 h-4 text-brand-600 dark:text-brand-400" />
               Documents to Merge ({docList.length}) • Total: {totalPages} Pages
             </h3>
 
             <button
               type="button"
               onClick={handleReset}
-              className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1"
+              className="text-xs text-dark-secondary hover:text-dark-text flex items-center gap-1"
             >
               <RefreshCw className="w-3 h-3" /> Clear List
             </button>
@@ -165,12 +169,12 @@ export default function PdfMerger() {
                 className="p-3.5 rounded-xl bg-dark-surface border border-dark-border flex items-center justify-between gap-3 text-xs"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-[11px]">
+                  <span className="w-6 h-6 rounded-full bg-dark-raised text-dark-secondary flex items-center justify-center font-bold text-[11px]">
                     {index + 1}
                   </span>
                   <div>
-                    <p className="font-semibold text-slate-100 truncate max-w-xs sm:max-w-md">{item.file.name}</p>
-                    <p className="text-slate-400 text-[11px] mt-0.5">
+                    <p className="font-semibold text-dark-text truncate max-w-xs sm:max-w-md">{item.file.name}</p>
+                    <p className="text-dark-secondary text-[11px] mt-0.5">
                       {item.pageCount} {item.pageCount === 1 ? 'page' : 'pages'} • {formatBytes(item.size)}
                     </p>
                   </div>
@@ -181,7 +185,7 @@ export default function PdfMerger() {
                     type="button"
                     disabled={index === 0}
                     onClick={() => moveUp(index)}
-                    className="p-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 disabled:opacity-30"
+                    className="p-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary disabled:opacity-30"
                     title="Move Up"
                   >
                     <ArrowUp className="w-3.5 h-3.5" />
@@ -190,7 +194,7 @@ export default function PdfMerger() {
                     type="button"
                     disabled={index === docList.length - 1}
                     onClick={() => moveDown(index)}
-                    className="p-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 disabled:opacity-30"
+                    className="p-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary disabled:opacity-30"
                     title="Move Down"
                   >
                     <ArrowDown className="w-3.5 h-3.5" />
@@ -198,7 +202,7 @@ export default function PdfMerger() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.id)}
-                    className="p-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-rose-500 hover:text-rose-400 text-slate-400 ml-1"
+                    className="p-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-rose-500 hover:text-rose-400 text-dark-secondary ml-1"
                     title="Remove"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -214,7 +218,7 @@ export default function PdfMerger() {
               type="button"
               disabled={merging || docList.length < 2}
               onClick={handleMerge}
-              className="w-full py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 mt-4"
+              className="w-full py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 mt-4"
             >
               {merging ? (
                 <>
@@ -232,10 +236,10 @@ export default function PdfMerger() {
 
           {/* Download Final Result */}
           {mergedBlob && (
-            <div className="p-6 rounded-xl bg-emerald-950/20 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-4">
+            <div className="p-6 rounded-xl bg-emerald-950/20 border border-brand-500/30 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h4 className="text-sm font-bold text-white">Combined PDF Generated Successfully!</h4>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h4 className="text-sm font-bold text-dark-text">Combined PDF Generated Successfully!</h4>
+                <p className="text-xs text-dark-secondary mt-0.5">
                   Total pages: {totalPages} • Merged file size: {formatBytes(mergedBlob.size)}
                 </p>
               </div>
@@ -243,7 +247,7 @@ export default function PdfMerger() {
               <button
                 type="button"
                 onClick={handleDownload}
-                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
+                className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
               >
                 <Download className="w-4 h-4" /> Download Merged PDF
               </button>

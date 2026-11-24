@@ -142,10 +142,10 @@ export async function encodeGif(
     // Emit initial clear code
     emitBits(clearCode, 9);
 
-    // Emit pixels (9 bits each)
+    // Emit pixels (9 bits each) - reset 9-bit table every 250 codes (max capacity before 10-bit switch is 254)
     for (let p = 0; p < indexedPixels.length; p++) {
       emitBits(indexedPixels[p], 9);
-      if (p > 0 && p % 4096 === 0) {
+      if ((p + 1) % 250 === 0 && p < indexedPixels.length - 1) {
         emitBits(clearCode, 9);
       }
     }
@@ -166,6 +166,10 @@ export async function encodeGif(
 
     if (onProgress) {
       onProgress(Math.round(((f + 1) / frames.length) * 100));
+    }
+    // Yield periodically so progress bar renders smoothly without freezing UI
+    if (f % 3 === 0) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
   }
 

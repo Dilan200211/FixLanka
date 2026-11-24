@@ -32,4 +32,24 @@ describe('verifyFileSignature', () => {
     const sig = await verifyFileSignature(file);
     expect(sig.isValid).toBe(false);
   });
+
+  it('detects TIFF and BMP images', async () => {
+    const tiff = new File([new Uint8Array([0x49, 0x49, 0x2a, 0x00, 0x08])], 'scan.tiff', { type: 'image/tiff' });
+    const bmp = new File([new Uint8Array([0x42, 0x4d, 0x00, 0x00])], 'bitmap.bmp', { type: 'image/bmp' });
+    expect((await verifyFileSignature(tiff)).detectedMime).toBe('image/tiff');
+    expect((await verifyFileSignature(bmp)).detectedMime).toBe('image/bmp');
+  });
+
+  it('distinguishes AVIF images from MP4 videos in ftyp containers', async () => {
+    const avifBytes = new Uint8Array([
+      0x00, 0x00, 0x00, 0x1c, 0x66, 0x74, 0x79, 0x70, 0x61, 0x76, 0x69, 0x66,
+    ]);
+    const mp4Bytes = new Uint8Array([
+      0x00, 0x00, 0x00, 0x1c, 0x66, 0x74, 0x79, 0x70, 0x69, 0x73, 0x6f, 0x6d,
+    ]);
+    const avif = new File([avifBytes], 'photo.avif', { type: 'image/avif' });
+    const mp4 = new File([mp4Bytes], 'clip.mp4', { type: 'video/mp4' });
+    expect((await verifyFileSignature(avif)).detectedMime).toBe('image/avif');
+    expect((await verifyFileSignature(mp4)).detectedMime).toBe('video/mp4');
+  });
 });

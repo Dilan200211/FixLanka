@@ -36,23 +36,23 @@ export default function WordCounter() {
       {/* Metric Cards Banner */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="p-4 rounded-xl bg-dark-surface border border-dark-border text-center">
-          <span className="text-slate-400 block mb-1">Total Words</span>
-          <span className="text-2xl font-extrabold text-white font-mono">{words}</span>
+          <span className="text-dark-secondary block mb-1">Total Words</span>
+          <span className="text-2xl font-extrabold text-dark-text font-mono">{words}</span>
         </div>
 
         <div className="p-4 rounded-xl bg-dark-surface border border-dark-border text-center">
-          <span className="text-slate-400 block mb-1">Characters (All)</span>
-          <span className="text-2xl font-extrabold text-white font-mono">{characters}</span>
+          <span className="text-dark-secondary block mb-1">Characters (All)</span>
+          <span className="text-2xl font-extrabold text-dark-text font-mono">{characters}</span>
         </div>
 
         <div className="p-4 rounded-xl bg-dark-surface border border-dark-border text-center">
-          <span className="text-slate-400 block mb-1">Chars (No Space)</span>
-          <span className="text-2xl font-extrabold text-emerald-400 font-mono">{charactersNoSpaces}</span>
+          <span className="text-dark-secondary block mb-1">Chars (No Space)</span>
+          <span className="text-2xl font-extrabold text-brand-600 dark:text-brand-400 font-mono">{charactersNoSpaces}</span>
         </div>
 
         <div className="p-4 rounded-xl bg-dark-surface border border-dark-border text-center">
-          <span className="text-slate-400 block mb-1">Sentences</span>
-          <span className="text-2xl font-extrabold text-white font-mono">{sentences}</span>
+          <span className="text-dark-secondary block mb-1">Sentences</span>
+          <span className="text-2xl font-extrabold text-dark-text font-mono">{sentences}</span>
         </div>
       </div>
 
@@ -61,24 +61,24 @@ export default function WordCounter() {
         <div className="p-3.5 rounded-xl bg-dark-surface border border-dark-border flex items-center gap-3">
           <FileText className="w-5 h-5 text-purple-400" />
           <div>
-            <span className="text-slate-400 block text-[11px]">Paragraphs</span>
-            <span className="text-sm font-bold text-white">{paragraphs}</span>
+            <span className="text-dark-secondary block text-[11px]">Paragraphs</span>
+            <span className="text-sm font-bold text-dark-text">{paragraphs}</span>
           </div>
         </div>
 
         <div className="p-3.5 rounded-xl bg-dark-surface border border-dark-border flex items-center gap-3">
           <Clock className="w-5 h-5 text-cyan-400" />
           <div>
-            <span className="text-slate-400 block text-[11px]">Est. Reading Time</span>
-            <span className="text-sm font-bold text-white">~{readingTimeMinutes} min (200 wpm)</span>
+            <span className="text-dark-secondary block text-[11px]">Est. Reading Time</span>
+            <span className="text-sm font-bold text-dark-text">~{readingTimeMinutes} min (200 wpm)</span>
           </div>
         </div>
 
         <div className="p-3.5 rounded-xl bg-dark-surface border border-dark-border flex items-center gap-3">
           <Mic className="w-5 h-5 text-amber-400" />
           <div>
-            <span className="text-slate-400 block text-[11px]">Est. Speaking Time</span>
-            <span className="text-sm font-bold text-white">~{speakingTimeMinutes} min (130 wpm)</span>
+            <span className="text-dark-secondary block text-[11px]">Est. Speaking Time</span>
+            <span className="text-sm font-bold text-dark-text">~{speakingTimeMinutes} min (130 wpm)</span>
           </div>
         </div>
       </div>
@@ -86,16 +86,16 @@ export default function WordCounter() {
       {/* Text Area & Action Controls */}
       <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-3">
         <div className="flex items-center justify-between">
-          <label className="text-slate-300 font-semibold">Enter or Paste Text:</label>
+          <label className="text-dark-secondary font-semibold">Enter or Paste Text:</label>
 
           <div className="flex gap-2">
             <button
               type="button"
               disabled={!text}
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 disabled:opacity-30 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary disabled:opacity-30 transition-colors"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copied' : 'Copy Text'}
             </button>
 
@@ -103,7 +103,7 @@ export default function WordCounter() {
               type="button"
               disabled={!text}
               onClick={handleClear}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-rose-500 hover:text-rose-400 text-slate-300 disabled:opacity-30 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-rose-500 hover:text-rose-400 text-dark-secondary disabled:opacity-30 transition-colors"
             >
               <Trash2 className="w-3.5 h-3.5" /> Clear
             </button>
@@ -115,7 +115,7 @@ export default function WordCounter() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Start typing or paste your content here..."
-          className="w-full p-4 bg-dark-card border border-slate-700/60 rounded-xl text-slate-100 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/50 leading-relaxed resize-y"
+          className="w-full p-4 bg-dark-card border border-dark-border rounded-xl text-dark-text text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/50 leading-relaxed resize-y"
         />
       </div>
     </div>

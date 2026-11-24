@@ -11,12 +11,12 @@ export interface DetectedSignature {
 export async function verifyFileSignature(file: File): Promise<DetectedSignature> {
   let buffer: ArrayBuffer;
 
-  const slice = file.slice(0, 32);
+  const slice = file.slice(0, 64);
   if (typeof (slice as any).arrayBuffer === 'function') {
     buffer = await (slice as any).arrayBuffer();
   } else if (typeof file.arrayBuffer === 'function') {
     const full = await file.arrayBuffer();
-    buffer = full.slice(0, 32);
+    buffer = full.slice(0, 64);
   } else {
     buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
       const reader = new FileReader();
@@ -66,13 +66,38 @@ export async function verifyFileSignature(file: File): Promise<DetectedSignature
     return { isValid: true, detectedMime: 'image/gif', extension: 'gif', label: 'GIF Image' };
   }
 
+  // BMP: 42 4D ("BM")
+  if (bytes[0] === 0x42 && bytes[1] === 0x4d) {
+    return { isValid: true, detectedMime: 'image/bmp', extension: 'bmp', label: 'BMP Image' };
+  }
+
+  // TIFF: Little-endian (49 49 2A 00) or Big-endian (4D 4D 00 2A)
+  if (
+    (bytes[0] === 0x49 && bytes[1] === 0x49 && bytes[2] === 0x2a && bytes[3] === 0x00) ||
+    (bytes[0] === 0x4d && bytes[1] === 0x4d && bytes[2] === 0x00 && bytes[3] === 0x2a)
+  ) {
+    return { isValid: true, detectedMime: 'image/tiff', extension: 'tiff', label: 'TIFF Image' };
+  }
+
+  // ICO: 00 00 01 00
+  if (bytes[0] === 0x00 && bytes[1] === 0x00 && bytes[2] === 0x01 && bytes[3] === 0x00) {
+    return { isValid: true, detectedMime: 'image/x-icon', extension: 'ico', label: 'ICO Icon' };
+  }
+
   // PDF: %PDF (25 50 44 46)
   if (bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) {
     return { isValid: true, detectedMime: 'application/pdf', extension: 'pdf', label: 'PDF Document' };
   }
 
-  // MP4 / MOV: ... ftyp (bytes 4-7 = 66 74 79 70)
+  // ISOBMFF (ftyp at bytes 4-7): distinguishes AVIF/HEIC images from MP4/MOV video
   if (bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) {
+    const brand = String.fromCharCode(bytes[8] || 0, bytes[9] || 0, bytes[10] || 0, bytes[11] || 0);
+    if (brand === 'avif' || brand === 'avis') {
+      return { isValid: true, detectedMime: 'image/avif', extension: 'avif', label: 'AVIF Image' };
+    }
+    if (brand === 'heic' || brand === 'heix' || brand === 'hevc' || brand === 'hevx' || brand === 'mif1' || brand === 'msf1') {
+      return { isValid: true, detectedMime: 'image/heic', extension: 'heic', label: 'HEIC Image' };
+    }
     return { isValid: true, detectedMime: 'video/mp4', extension: 'mp4', label: 'MP4 Video' };
   }
 
@@ -81,7 +106,13 @@ export async function verifyFileSignature(file: File): Promise<DetectedSignature
     return { isValid: true, detectedMime: 'video/webm', extension: 'webm', label: 'WebM Video' };
   }
 
-  // Plain text / JSON / SVG fallback
+  // SVG check (starts with <svg or <?xml)
+  const headText = new TextDecoder().decode(bytes).trimStart().toLowerCase();
+  if (headText.startsWith('<svg') || (headText.startsWith('<?xml') && (file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')))) {
+    return { isValid: true, detectedMime: 'image/svg+xml', extension: 'svg', label: 'SVG Vector Image' };
+  }
+
+  // Plain text / JSON fallback
   if (file.type === 'application/json' || file.name.endsWith('.json')) {
     return { isValid: true, detectedMime: 'application/json', extension: 'json', label: 'JSON Data' };
   }

@@ -136,8 +136,8 @@ ${inputPrompt.trim()}
             }}
             className={`px-3.5 py-2 rounded-lg font-semibold transition-all ${
               category === tab.id
-                ? 'bg-emerald-600 text-white shadow'
-                : 'bg-dark-surface border border-slate-700/60 text-slate-300 hover:border-slate-500'
+                ? 'bg-brand-600 text-white shadow'
+                : 'bg-dark-surface border border-dark-border text-dark-secondary hover:border-brand-500/40'
             }`}
           >
             {tab.label}
@@ -147,15 +147,15 @@ ${inputPrompt.trim()}
 
       {/* Quick Templates Bar */}
       <div className="p-3.5 rounded-xl bg-dark-surface border border-dark-border flex flex-wrap items-center gap-2">
-        <span className="text-slate-400 font-medium flex items-center gap-1.5 mr-1">
-          <BookOpen className="w-3.5 h-3.5 text-emerald-400" /> Quick Starters:
+        <span className="text-dark-secondary font-medium flex items-center gap-1.5 mr-1">
+          <BookOpen className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> Quick Starters:
         </span>
         {TEMPLATES.map((tmpl) => (
           <button
             key={tmpl.label}
             type="button"
             onClick={() => handleUseTemplate(tmpl)}
-            className="px-2.5 py-1 rounded bg-dark-card border border-slate-700/60 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/40 text-[11px]"
+            className="px-2.5 py-1 rounded bg-dark-card border border-dark-border text-dark-secondary hover:text-brand-600 dark:text-brand-400 hover:border-brand-500/40 text-[11px]"
           >
             {tmpl.label}
           </button>
@@ -165,7 +165,7 @@ ${inputPrompt.trim()}
       {/* Input Form */}
       <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4">
         <div>
-          <label className="block text-slate-200 font-semibold mb-1.5">
+          <label className="block text-dark-text font-semibold mb-1.5">
             Your Initial Idea or Draft Prompt:
           </label>
           <textarea
@@ -173,30 +173,30 @@ ${inputPrompt.trim()}
             value={inputPrompt}
             onChange={(e) => setInputPrompt(e.target.value)}
             placeholder="e.g. Build an authentication system in React with JWT..."
-            className="w-full px-3.5 py-2.5 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+            className="w-full px-3.5 py-2.5 bg-dark-card border border-dark-border rounded-lg text-dark-text placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-brand-500/50"
           />
         </div>
 
         {category !== 'image' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">Target Persona / Role</label>
+              <label className="block text-dark-secondary font-medium mb-1">Target Persona / Role</label>
               <input
                 type="text"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 placeholder="e.g. Staff Architect"
-                className="w-full px-3 py-2 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100"
+                className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-dark-text"
               />
             </div>
             <div>
-              <label className="block text-slate-300 font-medium mb-1">Target Audience</label>
+              <label className="block text-dark-secondary font-medium mb-1">Target Audience</label>
               <input
                 type="text"
                 value={audience}
                 onChange={(e) => setAudience(e.target.value)}
                 placeholder="e.g. Production Team"
-                className="w-full px-3 py-2 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100"
+                className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-dark-text"
               />
             </div>
           </div>
@@ -206,7 +206,7 @@ ${inputPrompt.trim()}
           type="button"
           disabled={!inputPrompt.trim()}
           onClick={optimizePromptText}
-          className="w-full py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2"
+          className="w-full py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-bold transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2"
         >
           <Wand2 className="w-4 h-4" /> Optimize Prompt Structure
         </button>
@@ -214,23 +214,23 @@ ${inputPrompt.trim()}
 
       {/* Output Display */}
       {optimizedPrompt && (
-        <div className="p-5 rounded-xl bg-emerald-950/15 border border-emerald-500/30 space-y-3">
+        <div className="p-5 rounded-xl bg-emerald-950/15 border border-brand-500/30 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-emerald-400" /> Optimized Prompt
+            <span className="font-bold text-dark-text flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-brand-600 dark:text-brand-400" /> Optimized Prompt
             </span>
 
             <button
               type="button"
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold bg-brand-600 hover:bg-brand-700 text-white transition-colors"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copied!' : 'Copy Prompt'}
             </button>
           </div>
 
-          <pre className="p-4 rounded-xl bg-dark-card border border-slate-800 text-slate-200 font-mono text-xs whitespace-pre-wrap leading-relaxed overflow-x-auto">
+          <pre className="p-4 rounded-xl bg-dark-card border border-dark-border text-dark-text font-mono text-xs whitespace-pre-wrap leading-relaxed overflow-x-auto">
             {optimizedPrompt}
           </pre>
         </div>

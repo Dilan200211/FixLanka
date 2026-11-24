@@ -27,7 +27,6 @@ export default function HeroSearch() {
     setIsOpen(true);
   }, [query]);
 
-  // Click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -47,10 +46,10 @@ export default function HeroSearch() {
             window.location.href = `/tools/${results[0].slug}`;
           }
         }}
-        className="relative flex items-center w-full"
+        className="relative flex items-center w-full shadow-sm dark:shadow-none rounded-xl"
       >
         <div className="relative flex-grow flex items-center">
-          <Search className="absolute left-3.5 w-4 h-4 text-neutral-400 pointer-events-none" />
+          <Search className="absolute left-3.5 w-4 h-4 text-dark-muted pointer-events-none" />
           <input
             type="text"
             value={query}
@@ -58,8 +57,8 @@ export default function HeroSearch() {
             onFocus={() => {
               if (query.trim()) setIsOpen(true);
             }}
-            placeholder="Search tools... (e.g. remove metadata, compress, pdf)"
-            className="w-full pl-10 pr-12 py-3 bg-dark-card border border-dark-border focus:border-neutral-600 rounded-l-xl sm:rounded-l-xl text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none transition-colors"
+            placeholder="Search for a tool... (e.g. compress photo, merge pdf, qr code)"
+            className="w-full pl-10 pr-12 py-3 bg-dark-card border border-dark-border border-r-0 focus:border-brand-500 rounded-l-xl text-sm text-dark-text placeholder-dark-muted focus:outline-none transition-colors"
           />
           {query && (
             <button
@@ -68,7 +67,7 @@ export default function HeroSearch() {
                 setQuery('');
                 setIsOpen(false);
               }}
-              className="absolute right-3 p-1 text-neutral-400 hover:text-neutral-200"
+              className="absolute right-3 p-1 text-dark-muted hover:text-dark-text"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -76,7 +75,7 @@ export default function HeroSearch() {
         </div>
         <button
           type="submit"
-          className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm rounded-r-xl transition-colors flex-shrink-0 flex items-center gap-1.5"
+          className="px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm rounded-r-xl border border-brand-600 transition-colors flex-shrink-0 flex items-center gap-1.5"
         >
           <span>Search</span>
         </button>
@@ -84,31 +83,31 @@ export default function HeroSearch() {
 
       {/* Live Dropdown Results */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 z-30 bg-dark-card border border-dark-border rounded-xl shadow-2xl overflow-hidden divide-y divide-dark-border/60">
+        <div className="absolute top-full left-0 right-0 mt-2 z-30 bg-dark-card border border-dark-border rounded-xl shadow-xl overflow-hidden divide-y divide-dark-border">
           {results.length > 0 ? (
             results.map((tool) => (
               <a
                 key={tool.id}
                 href={`/tools/${tool.slug}`}
-                className="flex items-center justify-between p-3.5 hover:bg-dark-raised/70 transition-colors group"
+                className="flex items-center justify-between p-3.5 hover:bg-dark-raised/60 transition-colors group"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-neutral-100 group-hover:text-emerald-400 transition-colors">
+                    <span className="text-sm font-medium text-dark-text group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                       {tool.name}
                     </span>
-                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-dark-surface text-neutral-400 border border-dark-border">
+                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-dark-surface text-dark-muted border border-dark-border">
                       {tool.category}
                     </span>
                   </div>
-                  <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1">{tool.shortDescription}</p>
+                  <p className="text-xs text-dark-secondary mt-0.5 line-clamp-1">{tool.shortDescription}</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-emerald-400 transition-colors flex-shrink-0 ml-3" />
+                <ArrowRight className="w-4 h-4 text-dark-muted group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors flex-shrink-0 ml-3" />
               </a>
             ))
           ) : (
-            <div className="p-4 text-center text-xs text-neutral-400">
-              No tools matching "{query}". Try "exif", "image", or "pdf".
+            <div className="p-4 text-center text-xs text-dark-secondary">
+              No tools matching "{query}". Try "photo", "pdf", or "qr code".
             </div>
           )}
         </div>

@@ -41,8 +41,8 @@ export default function SocialPostPreview() {
             onClick={() => setPlatform(p)}
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${
               platform === p
-                ? 'bg-emerald-600 text-white shadow'
-                : 'bg-dark-surface border border-slate-700/60 text-slate-300 hover:border-slate-500'
+                ? 'bg-brand-600 text-white shadow'
+                : 'bg-dark-surface border border-dark-border text-dark-secondary hover:border-brand-500/40'
             }`}
           >
             {PLATFORM_LIMITS[p].name}
@@ -53,34 +53,34 @@ export default function SocialPostPreview() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Editor */}
         <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4">
-          <h3 className="font-bold text-slate-200 uppercase tracking-wider">Post Details</h3>
+          <h3 className="font-bold text-dark-text uppercase tracking-wider">Post Details</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">Display Name</label>
+              <label className="block text-dark-secondary font-medium mb-1">Display Name</label>
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100"
+                className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-dark-text"
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">Handle / Username</label>
+              <label className="block text-dark-secondary font-medium mb-1">Handle / Username</label>
               <input
                 type="text"
                 value={handle}
                 onChange={(e) => setHandle(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100"
+                className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-dark-text"
               />
             </div>
           </div>
 
           <div>
-            <div className="flex justify-between font-medium text-slate-300 mb-1">
+            <div className="flex justify-between font-medium text-dark-secondary mb-1">
               <span>Post Caption / Text</span>
-              <span className={`font-mono ${isOverLimit ? 'text-rose-400 font-bold' : 'text-slate-400'}`}>
+              <span className={`font-mono ${isOverLimit ? 'text-rose-400 font-bold' : 'text-dark-secondary'}`}>
                 {charCount} / {limitInfo.maxChars} chars
               </span>
             </div>
@@ -89,15 +89,15 @@ export default function SocialPostPreview() {
               value={postText}
               onChange={(e) => setPostText(e.target.value)}
               placeholder="Write your post here..."
-              className="w-full px-3.5 py-2.5 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+              className="w-full px-3.5 py-2.5 bg-dark-card border border-dark-border rounded-lg text-dark-text placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-brand-500/50"
             />
           </div>
 
           <div>
-            <label className="block text-slate-300 font-medium mb-1.5">Attach Media (Optional)</label>
+            <label className="block text-dark-secondary font-medium mb-1.5">Attach Media (Optional)</label>
             <div className="flex items-center gap-3">
-              <label className="px-3 py-2 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 cursor-pointer transition-colors flex items-center gap-1.5">
-                <ImageIcon className="w-3.5 h-3.5 text-emerald-400" /> Choose Image
+              <label className="px-3 py-2 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary cursor-pointer transition-colors flex items-center gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> Choose Image
                 <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
               </label>
 
@@ -116,40 +116,40 @@ export default function SocialPostPreview() {
 
         {/* Live Simulation Card */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-slate-400 font-medium">
+          <div className="flex items-center justify-between text-dark-secondary font-medium">
             <span className="flex items-center gap-1.5">
-              <Eye className="w-4 h-4 text-emerald-400" /> Simulated Feed Preview
+              <Eye className="w-4 h-4 text-brand-600 dark:text-brand-400" /> Simulated Feed Preview
             </span>
-            <span className="text-[11px] text-slate-500">Visual approximation</span>
+            <span className="text-[11px] text-dark-muted">Visual approximation</span>
           </div>
 
           {/* Twitter / X Replica */}
           {platform === 'twitter' && (
-            <div className="p-4 rounded-xl border border-slate-800 bg-[#000000] text-slate-100 shadow-xl max-w-md mx-auto">
+            <div className="p-4 rounded-xl border border-dark-border bg-[#000000] text-dark-text shadow-xl max-w-md mx-auto">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-white flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-dark-raised border border-dark-border flex items-center justify-center font-bold text-dark-text flex-shrink-0">
                   {displayName.substring(0, 1)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span className="font-bold text-sm truncate">{displayName}</span>
-                    <span className="text-slate-500 text-xs truncate">@{handle}</span>
-                    <span className="text-slate-500 text-xs">· 1m</span>
+                    <span className="text-dark-muted text-xs truncate">@{handle}</span>
+                    <span className="text-dark-muted text-xs">· 1m</span>
                   </div>
 
-                  <p className="mt-1 text-sm whitespace-pre-wrap leading-relaxed text-slate-200">{postText}</p>
+                  <p className="mt-1 text-sm whitespace-pre-wrap leading-relaxed text-dark-text">{postText}</p>
 
                   {attachedImage && (
-                    <div className="mt-3 rounded-2xl overflow-hidden border border-slate-800 max-h-60 bg-black">
+                    <div className="mt-3 rounded-2xl overflow-hidden border border-dark-border max-h-60 bg-black">
                       <img src={attachedImage} alt="Post Attachment" className="w-full h-full object-cover" />
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between mt-4 text-slate-500 max-w-xs text-xs">
+                  <div className="flex items-center justify-between mt-4 text-dark-muted max-w-xs text-xs">
                     <span className="flex items-center gap-1 hover:text-blue-400 cursor-pointer">
                       <MessageCircle className="w-3.5 h-3.5" /> 12
                     </span>
-                    <span className="flex items-center gap-1 hover:text-emerald-400 cursor-pointer">
+                    <span className="flex items-center gap-1 hover:text-brand-600 dark:text-brand-400 cursor-pointer">
                       <Repeat2 className="w-3.5 h-3.5" /> 5
                     </span>
                     <span className="flex items-center gap-1 hover:text-rose-400 cursor-pointer">
@@ -166,27 +166,27 @@ export default function SocialPostPreview() {
 
           {/* LinkedIn Replica */}
           {platform === 'linkedin' && (
-            <div className="p-4 rounded-xl border border-slate-800 bg-[#1b1f23] text-slate-100 shadow-xl max-w-md mx-auto space-y-3">
+            <div className="p-4 rounded-xl border border-dark-border bg-[#1b1f23] text-dark-text shadow-xl max-w-md mx-auto space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-white flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center font-bold text-white flex-shrink-0">
                   {displayName.substring(0, 1)}
                 </div>
                 <div>
-                  <p className="font-bold text-sm text-white">{displayName}</p>
-                  <p className="text-[11px] text-slate-400">Founder & Engineer • 1st</p>
-                  <p className="text-[10px] text-slate-500">Just now • 🌐</p>
+                  <p className="font-bold text-sm text-dark-text">{displayName}</p>
+                  <p className="text-[11px] text-dark-secondary">Founder & Engineer • 1st</p>
+                  <p className="text-[10px] text-dark-muted">Just now • 🌐</p>
                 </div>
               </div>
 
-              <p className="text-sm whitespace-pre-wrap leading-relaxed text-slate-200">{postText}</p>
+              <p className="text-sm whitespace-pre-wrap leading-relaxed text-dark-text">{postText}</p>
 
               {attachedImage && (
-                <div className="rounded-lg overflow-hidden border border-slate-700/60 max-h-60">
+                <div className="rounded-lg overflow-hidden border border-dark-border max-h-60">
                   <img src={attachedImage} alt="Post Attachment" className="w-full h-full object-cover" />
                 </div>
               )}
 
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-around text-slate-400 text-xs">
+              <div className="pt-2 border-t border-dark-border flex items-center justify-around text-dark-secondary text-xs">
                 <span className="flex items-center gap-1 hover:text-blue-400 cursor-pointer">
                   <ThumbsUp className="w-3.5 h-3.5" /> Like
                 </span>
@@ -202,21 +202,21 @@ export default function SocialPostPreview() {
 
           {/* Facebook Replica */}
           {platform === 'facebook' && (
-            <div className="p-4 rounded-xl border border-slate-800 bg-[#242526] text-slate-100 shadow-xl max-w-md mx-auto space-y-3">
+            <div className="p-4 rounded-xl border border-dark-border bg-[#242526] text-dark-text shadow-xl max-w-md mx-auto space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white flex-shrink-0">
                   {displayName.substring(0, 1)}
                 </div>
                 <div>
-                  <p className="font-bold text-sm text-white">{displayName}</p>
-                  <p className="text-[11px] text-slate-400">Just now • 👥</p>
+                  <p className="font-bold text-sm text-dark-text">{displayName}</p>
+                  <p className="text-[11px] text-dark-secondary">Just now • 👥</p>
                 </div>
               </div>
 
-              <p className="text-sm whitespace-pre-wrap leading-relaxed text-slate-200">{postText}</p>
+              <p className="text-sm whitespace-pre-wrap leading-relaxed text-dark-text">{postText}</p>
 
               {attachedImage && (
-                <div className="rounded-lg overflow-hidden border border-slate-700/60 max-h-60">
+                <div className="rounded-lg overflow-hidden border border-dark-border max-h-60">
                   <img src={attachedImage} alt="Post Attachment" className="w-full h-full object-cover" />
                 </div>
               )}
@@ -225,10 +225,10 @@ export default function SocialPostPreview() {
 
           {/* Instagram Replica */}
           {platform === 'instagram' && (
-            <div className="p-4 rounded-xl border border-slate-800 bg-[#121212] text-slate-100 shadow-xl max-w-md mx-auto space-y-3">
+            <div className="p-4 rounded-xl border border-dark-border bg-[#121212] text-dark-text shadow-xl max-w-md mx-auto space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-purple-600 p-[2px]">
-                  <div className="w-full h-full rounded-full bg-black flex items-center justify-center font-bold text-white text-[10px]">
+                  <div className="w-full h-full rounded-full bg-black flex items-center justify-center font-bold text-dark-text text-[10px]">
                     {displayName.substring(0, 1)}
                   </div>
                 </div>
@@ -236,23 +236,23 @@ export default function SocialPostPreview() {
               </div>
 
               {attachedImage ? (
-                <div className="rounded-lg overflow-hidden border border-slate-800 aspect-square bg-black">
+                <div className="rounded-lg overflow-hidden border border-dark-border aspect-square bg-black">
                   <img src={attachedImage} alt="Post Attachment" className="w-full h-full object-cover" />
                 </div>
               ) : (
-                <div className="p-8 text-center bg-slate-900 rounded-lg border border-slate-800 text-slate-500 text-xs">
+                <div className="p-8 text-center bg-dark-surface rounded-lg border border-dark-border text-dark-muted text-xs">
                   Attach an image to preview Instagram feed appearance
                 </div>
               )}
 
-              <p className="text-xs text-slate-200">
+              <p className="text-xs text-dark-text">
                 <strong className="mr-1.5">{handle}</strong>
                 {postText}
               </p>
             </div>
           )}
 
-          <div className="p-3 rounded-lg bg-dark-surface border border-slate-800 flex items-center gap-2 text-[11px] text-slate-400">
+          <div className="p-3 rounded-lg bg-dark-surface border border-dark-border flex items-center gap-2 text-[11px] text-dark-secondary">
             <Info className="w-3.5 h-3.5 flex-shrink-0" />
             <span>This simulator renders an approximation based on current platform UI standards.</span>
           </div>

@@ -17,11 +17,15 @@ export default function ImageResizer() {
   const [resizedBlob, setResizedBlob] = useState<Blob | null>(null);
   const [resizedUrl, setResizedUrl] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFilesSelected = (files: File[]) => {
     if (files.length === 0) return;
     const file = files[0];
     setSelectedFile(file);
+    setError(null);
+    setResizedBlob(null);
+    setResizedUrl(null);
 
     const url = URL.createObjectURL(file);
     setOriginalUrl(url);
@@ -32,6 +36,9 @@ export default function ImageResizer() {
       setOrigDimensions({ width: img.naturalWidth, height: img.naturalHeight });
       setWidth(img.naturalWidth);
       setHeight(img.naturalHeight);
+    };
+    img.onerror = () => {
+      setError('Could not load image dimensions. This image format may not be supported by your browser.');
     };
   };
 
@@ -67,6 +74,7 @@ export default function ImageResizer() {
   const handleResize = () => {
     if (!originalUrl || width <= 0 || height <= 0) return;
     setProcessing(true);
+    setError(null);
 
     const img = new Image();
     img.src = originalUrl;
@@ -77,6 +85,7 @@ export default function ImageResizer() {
       const ctx = canvas.getContext('2d');
       if (!ctx) {
         setProcessing(false);
+        setError('Could not initialize image processor.');
         return;
       }
 
@@ -94,6 +103,7 @@ export default function ImageResizer() {
         (blob) => {
           if (!blob) {
             setProcessing(false);
+            setError('Failed to encode resized image.');
             return;
           }
           if (resizedUrl) URL.revokeObjectURL(resizedUrl);
@@ -105,6 +115,10 @@ export default function ImageResizer() {
         outputFormat,
         0.92
       );
+    };
+    img.onerror = () => {
+      setProcessing(false);
+      setError('Failed to process image in browser.');
     };
   };
 
@@ -142,12 +156,12 @@ export default function ImageResizer() {
                 <img
                   src={originalUrl}
                   alt="Original"
-                  className="w-12 h-12 object-cover rounded-lg border border-slate-700"
+                  className="w-12 h-12 object-cover rounded-lg border border-dark-border"
                 />
               )}
               <div>
-                <p className="text-sm font-semibold text-white truncate max-w-xs">{selectedFile.name}</p>
-                <p className="text-xs text-slate-400">
+                <p className="text-sm font-semibold text-dark-text truncate max-w-xs">{selectedFile.name}</p>
+                <p className="text-xs text-dark-secondary">
                   {origDimensions.width} × {origDimensions.height} px • {formatBytes(selectedFile.size)}
                 </p>
               </div>
@@ -156,7 +170,7 @@ export default function ImageResizer() {
             <button
               type="button"
               onClick={handleReset}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-raised hover:bg-dark-raised text-dark-secondary transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Choose New Image
             </button>
@@ -166,33 +180,33 @@ export default function ImageResizer() {
           <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4 text-xs">
             {/* Quick Presets */}
             <div>
-              <span className="text-slate-400 font-medium block mb-2">Quick Standard Presets:</span>
+              <span className="text-dark-secondary font-medium block mb-2">Quick Standard Presets:</span>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => handlePreset(1920, 1080)}
-                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-slate-700 hover:border-emerald-500 text-slate-300"
+                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500 text-dark-secondary"
                 >
                   Full HD (1920×1080)
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(1080, 1080)}
-                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-slate-700 hover:border-emerald-500 text-slate-300"
+                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500 text-dark-secondary"
                 >
                   Square (1080×1080)
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(400, 400)}
-                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-slate-700 hover:border-emerald-500 text-slate-300"
+                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500 text-dark-secondary"
                 >
                   Avatar (400×400)
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(1280, 720)}
-                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-slate-700 hover:border-emerald-500 text-slate-300"
+                  className="px-2.5 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500 text-dark-secondary"
                 >
                   720p HD (1280×720)
                 </button>
@@ -201,14 +215,14 @@ export default function ImageResizer() {
 
             {/* Percentage Scale */}
             <div>
-              <span className="text-slate-400 font-medium block mb-2">Scale by Percentage:</span>
+              <span className="text-dark-secondary font-medium block mb-2">Scale by Percentage:</span>
               <div className="flex gap-2">
                 {[25, 50, 75, 200].map((pct) => (
                   <button
                     key={pct}
                     type="button"
                     onClick={() => handlePercentageScale(pct)}
-                    className="px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700 hover:border-emerald-500 text-slate-300 font-mono"
+                    className="px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500 text-dark-secondary font-mono"
                   >
                     {pct}%
                   </button>
@@ -217,29 +231,29 @@ export default function ImageResizer() {
             </div>
 
             {/* Explicit Dimension Inputs */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end pt-2 border-t border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end pt-2 border-t border-dark-border">
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Target Width (px)</label>
+                <label className="block text-dark-secondary font-medium mb-1">Target Width (px)</label>
                 <input
                   type="number"
                   min="1"
                   max="10000"
                   value={width}
                   onChange={(e) => handleWidthChange(parseInt(e.target.value) || 0)}
-                  className="w-full px-3 py-2 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100 font-mono"
+                  className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-dark-text font-mono"
                 />
               </div>
 
               <div className="flex items-center gap-2">
                 <div className="flex-1">
-                  <label className="block text-slate-300 font-medium mb-1">Target Height (px)</label>
+                  <label className="block text-dark-secondary font-medium mb-1">Target Height (px)</label>
                   <input
                     type="number"
                     min="1"
                     max="10000"
                     value={height}
                     onChange={(e) => handleHeightChange(parseInt(e.target.value) || 0)}
-                    className="w-full px-3 py-2 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100 font-mono"
+                    className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-dark-text font-mono"
                   />
                 </div>
 
@@ -248,8 +262,8 @@ export default function ImageResizer() {
                   onClick={() => setAspectLocked(!aspectLocked)}
                   className={`p-2.5 rounded-lg border transition-colors mt-5 ${
                     aspectLocked
-                      ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400'
-                      : 'bg-slate-800 border-slate-700 text-slate-400'
+                      ? 'bg-brand-500/10 border-brand-500/40 text-brand-600 dark:text-brand-400'
+                      : 'bg-dark-raised border-dark-border text-dark-secondary'
                   }`}
                   title={aspectLocked ? 'Aspect Ratio Locked' : 'Aspect Ratio Unlocked'}
                 >
@@ -258,11 +272,11 @@ export default function ImageResizer() {
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Format</label>
+                <label className="block text-dark-secondary font-medium mb-1">Format</label>
                 <select
                   value={outputFormat}
                   onChange={(e) => setOutputFormat(e.target.value as any)}
-                  className="w-full px-3 py-2 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100"
+                  className="w-full px-3 py-2 bg-dark-card border border-dark-border rounded-lg text-dark-text"
                 >
                   <option value="image/jpeg">JPEG (.jpg)</option>
                   <option value="image/png">PNG (.png)</option>
@@ -275,7 +289,7 @@ export default function ImageResizer() {
               type="button"
               disabled={processing || width <= 0 || height <= 0}
               onClick={handleResize}
-              className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold transition-all shadow-md shadow-emerald-950/30 flex items-center justify-center gap-2 mt-2"
+              className="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-bold transition-all shadow-md shadow-emerald-950/30 flex items-center justify-center gap-2 mt-2"
             >
               {processing ? (
                 <>
@@ -290,15 +304,21 @@ export default function ImageResizer() {
             </button>
           </div>
 
+          {error && (
+            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+              {error}
+            </div>
+          )}
+
           {/* Results Card */}
           {resizedBlob && resizedUrl && (
-            <div className="p-6 rounded-xl bg-emerald-950/15 border border-emerald-500/30 space-y-4">
+            <div className="p-6 rounded-xl bg-emerald-950/15 border border-brand-500/30 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-emerald-400" /> Resized Successfully
+                  <h4 className="text-sm font-bold text-dark-text flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-brand-600 dark:text-brand-400" /> Resized Successfully
                   </h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-dark-secondary mt-0.5">
                     New dimensions: {width} × {height} px • Output size: {formatBytes(resizedBlob.size)}
                   </p>
                 </div>
@@ -306,14 +326,14 @@ export default function ImageResizer() {
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
+                  className="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
                 >
                   <Download className="w-4 h-4" /> Download Resized Image
                 </button>
               </div>
 
               {/* Output Preview */}
-              <div className="max-h-72 overflow-hidden rounded-lg border border-slate-800 bg-black/40 flex items-center justify-center p-2">
+              <div className="max-h-72 overflow-hidden rounded-lg border border-dark-border bg-black/40 flex items-center justify-center p-2">
                 <img
                   src={resizedUrl}
                   alt="Resized Result"

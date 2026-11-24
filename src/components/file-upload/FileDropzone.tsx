@@ -92,12 +92,12 @@ export default function FileDropzone({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !disabled && fileInputRef.current?.click()}
-        className={`relative flex flex-col items-center justify-center p-8 sm:p-12 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+        className={`relative flex flex-col items-center justify-center p-8 sm:p-12 rounded-xl border-2 border-dashed transition-colors cursor-pointer ${
           disabled
-            ? 'opacity-50 cursor-not-allowed border-slate-800 bg-slate-900/30'
+            ? 'opacity-50 cursor-not-allowed border-dark-border bg-dark-raised/30'
             : isDragging
-            ? 'border-emerald-500 bg-emerald-500/10 scale-[0.99]'
-            : 'border-slate-700/80 hover:border-emerald-500/60 bg-dark-surface/60 hover:bg-dark-surface'
+            ? 'border-brand-500 bg-brand-500/10'
+            : 'border-dark-border-strong hover:border-brand-500/60 bg-dark-surface hover:bg-dark-raised/40'
         }`}
       >
         <input
@@ -110,14 +110,14 @@ export default function FileDropzone({
           className="hidden"
         />
 
-        <div className="w-12 h-12 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center mb-3">
-          <Upload className="w-5 h-5 text-emerald-400" />
+        <div className="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mb-3">
+          <Upload className="w-5 h-5 text-brand-600 dark:text-brand-400" />
         </div>
 
-        <p className="text-sm font-semibold text-slate-100 text-center">
+        <p className="text-sm font-semibold text-dark-text text-center">
           Click to choose a file or drag & drop here
         </p>
-        <p className="text-xs text-slate-400 mt-1 text-center">
+        <p className="text-xs text-dark-secondary mt-1 text-center">
           {helpText || `Max file size: ${formatBytes(maxSize)} ${multiple ? '• Multiple files allowed' : ''}`}
         </p>
       </div>

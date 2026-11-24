@@ -12,11 +12,11 @@ const { title, description, href, tag, iconType } = Astro.props;
 
 <a
   href={href}
-  class="group relative flex items-center justify-between p-4 rounded-xl bg-dark-card border border-dark-border hover:border-neutral-700 hover:bg-dark-raised/50 transition-[border-color,background-color] duration-150"
+  class="group relative flex items-center justify-between p-4 rounded-xl bg-dark-card border border-dark-border shadow-sm dark:shadow-none hover:border-brand-500/40 hover:bg-dark-raised/50 transition-[border-color,background-color] duration-150"
 >
   <div class="flex items-center gap-3.5 min-w-0 pr-2">
-    {/* Icon Container with subtle tinted accent */}
-    <div class="w-10 h-10 rounded-lg bg-dark-surface border border-dark-border flex items-center justify-center text-neutral-300 group-hover:text-emerald-400 group-hover:border-neutral-600 transition-colors flex-shrink-0">
+    {/* Icon Container with subtle cobalt SaaS accent */}
+    <div class="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition-colors flex-shrink-0">
       {iconType === 'cpu' && (
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
           <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -74,27 +74,40 @@ const { title, description, href, tag, iconType } = Astro.props;
           <path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5-2 2 1.5 1.5-1.5 1.5-2-2L9 10l-1.5-1.5M7 17a5 5 0 100-10 5 5 0 000 10z" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       )}
+      {iconType === 'qr' && (
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <path d="M14 14h3v3h-3zM17 17h4v4h-4zM14 20h3v1h-3zM20 14h1v3h-1z" />
+        </svg>
+      )}
+      {iconType === 'counter' && (
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+          <path d="M4 6h16M4 12h10M4 18h14" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      )}
     </div>
 
     <div class="min-w-0">
       <div class="flex items-center gap-2">
-        <h3 class="text-sm font-medium text-neutral-100 group-hover:text-emerald-400 transition-colors truncate">
+        <h3 class="text-sm font-semibold text-dark-text group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors truncate">
           {title}
         </h3>
         {tag && (
-          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20">
             {tag}
           </span>
         )}
       </div>
-      <p class="text-xs text-neutral-400 mt-0.5 truncate leading-relaxed">
+      <p class="text-xs text-dark-secondary mt-0.5 truncate leading-relaxed">
         {description}
       </p>
     </div>
   </div>
 
   {/* Circle Arrow Action */}
-  <div class="w-7 h-7 rounded-full bg-dark-surface border border-dark-border flex items-center justify-center text-neutral-400 group-hover:text-emerald-400 group-hover:border-neutral-600 transition-colors flex-shrink-0">
+  <div class="w-7 h-7 rounded-full bg-dark-surface border border-dark-border flex items-center justify-center text-dark-muted group-hover:text-brand-600 dark:group-hover:text-brand-400 group-hover:border-brand-500/40 transition-colors flex-shrink-0">
     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
       <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
     </svg>

@@ -23,10 +23,10 @@ export default function PdfCompressor() {
 
     try {
       const buffer = await file.arrayBuffer();
-      const doc = await PDFDocument.load(buffer);
+      const doc = await PDFDocument.load(buffer, { ignoreEncryption: true });
       setPageCount(doc.getPageCount());
     } catch {
-      setError('Could not read PDF. Ensure the file is not encrypted.');
+      setError('Could not read PDF. Ensure the file is not password-locked or corrupted.');
     }
   };
 
@@ -38,7 +38,7 @@ export default function PdfCompressor() {
     try {
       const buffer = await selectedFile.arrayBuffer();
       // Load PDF document
-      const doc = await PDFDocument.load(buffer);
+      const doc = await PDFDocument.load(buffer, { ignoreEncryption: true });
 
       // Save with useObjectStreams: true to pack internal objects into compressed streams
       const optimizedBytes = await doc.save({
@@ -46,7 +46,7 @@ export default function PdfCompressor() {
         addDefaultPage: false,
       });
 
-      const blob = new Blob([optimizedBytes], { type: 'application/pdf' });
+      const blob = new Blob([optimizedBytes.slice()], { type: 'application/pdf' });
       setCompressedBlob(blob);
       setSavings(calculateSavings(selectedFile.size, blob.size));
     } catch (err: any) {
@@ -89,15 +89,15 @@ export default function PdfCompressor() {
                 <FileArchive className="w-5 h-5 text-red-400" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white truncate max-w-xs">{selectedFile.name}</p>
-                <p className="text-xs text-slate-400">{pageCount} Pages • {formatBytes(selectedFile.size)}</p>
+                <p className="text-sm font-semibold text-dark-text truncate max-w-xs">{selectedFile.name}</p>
+                <p className="text-xs text-dark-secondary">{pageCount} Pages • {formatBytes(selectedFile.size)}</p>
               </div>
             </div>
 
             <button
               type="button"
               onClick={handleReset}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-raised hover:bg-dark-raised text-dark-secondary transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Choose Different PDF
             </button>
@@ -112,9 +112,9 @@ export default function PdfCompressor() {
           {/* Compress Settings & Trigger */}
           {!compressedBlob && (
             <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4 text-xs">
-              <div className="p-4 rounded-lg bg-dark-card border border-slate-800 flex items-start gap-3">
-                <Info className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <p className="text-slate-300 leading-relaxed">
+              <div className="p-4 rounded-lg bg-dark-card border border-dark-border flex items-start gap-3">
+                <Info className="w-4 h-4 text-brand-600 dark:text-brand-400 flex-shrink-0 mt-0.5" />
+                <p className="text-dark-secondary leading-relaxed">
                   FixLanka Tools optimizes PDF documents locally by repacking internal objects into compressed binary streams and deduplicating dictionary overhead. Vector graphics, fonts, and text remain fully sharp.
                 </p>
               </div>
@@ -123,7 +123,7 @@ export default function PdfCompressor() {
                 type="button"
                 disabled={processing}
                 onClick={handleCompress}
-                className="w-full py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2"
+                className="w-full py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-bold transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2"
               >
                 {processing ? (
                   <>
@@ -142,14 +142,14 @@ export default function PdfCompressor() {
 
           {/* Results Comparison */}
           {compressedBlob && savings && (
-            <div className="p-6 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-4">
+            <div className="p-6 rounded-xl bg-emerald-950/20 border border-brand-500/30 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <h4 className="text-sm font-bold text-dark-text flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-brand-600 dark:text-brand-400" />
                     {savings.isSmaller ? 'PDF Optimized Successfully!' : 'PDF Already Fully Optimized'}
                   </h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-dark-secondary mt-0.5">
                     {savings.isSmaller
                       ? `Reduced file size by ${savings.percent}% (${formatBytes(savings.savedBytes)} saved).`
                       : 'This PDF already utilizes optimal stream compression and cannot be reduced further.'}
@@ -158,21 +158,21 @@ export default function PdfCompressor() {
 
                 <div className="flex items-center gap-4 text-xs font-medium">
                   <div>
-                    <span className="text-slate-400 block">Original:</span>
-                    <span className="text-slate-200">{formatBytes(selectedFile.size)}</span>
+                    <span className="text-dark-secondary block">Original:</span>
+                    <span className="text-dark-text">{formatBytes(selectedFile.size)}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block">Optimized:</span>
-                    <span className="text-emerald-400">{formatBytes(compressedBlob.size)}</span>
+                    <span className="text-dark-secondary block">Optimized:</span>
+                    <span className="text-brand-600 dark:text-brand-400">{formatBytes(compressedBlob.size)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-emerald-500/20 flex justify-end">
+              <div className="pt-3 border-t border-brand-500/20 flex justify-end">
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
+                  className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition-colors flex items-center gap-2 shadow"
                 >
                   <Download className="w-4 h-4" /> Download Optimized PDF
                 </button>

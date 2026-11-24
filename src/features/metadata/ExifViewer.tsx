@@ -90,12 +90,12 @@ export default function ExifViewer() {
                 <img
                   src={previewUrl}
                   alt="Preview"
-                  className="w-12 h-12 object-cover rounded-lg border border-slate-700"
+                  className="w-12 h-12 object-cover rounded-lg border border-dark-border"
                 />
               )}
               <div>
-                <p className="text-sm font-semibold text-white truncate max-w-xs">{selectedFile.name}</p>
-                <p className="text-xs text-slate-400">{formatBytes(selectedFile.size)} • {selectedFile.type || 'image'}</p>
+                <p className="text-sm font-semibold text-dark-text truncate max-w-xs">{selectedFile.name}</p>
+                <p className="text-xs text-dark-secondary">{formatBytes(selectedFile.size)} • {selectedFile.type || 'image'}</p>
               </div>
             </div>
 
@@ -105,15 +105,15 @@ export default function ExifViewer() {
                   <button
                     type="button"
                     onClick={copyJson}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-raised hover:bg-dark-raised text-dark-text border border-dark-border transition-colors"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? <Check className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> : <Copy className="w-3.5 h-3.5" />}
                     {copied ? 'Copied' : 'Copy JSON'}
                   </button>
                   <button
                     type="button"
                     onClick={downloadReport}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-600 hover:bg-brand-700 text-white transition-colors"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Download JSON
@@ -123,7 +123,7 @@ export default function ExifViewer() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-raised hover:bg-dark-raised text-dark-secondary transition-colors"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Change Image
@@ -133,8 +133,8 @@ export default function ExifViewer() {
 
           {/* Loading indicator */}
           {loading && (
-            <div className="p-12 text-center text-slate-400">
-              <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+            <div className="p-12 text-center text-dark-secondary">
+              <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
               <p className="text-sm font-medium">Extracting EXIF & IPTC Chunks...</p>
             </div>
           )}
@@ -143,7 +143,7 @@ export default function ExifViewer() {
           {error && (
             <div className="p-6 rounded-xl bg-dark-surface border border-dark-border text-center space-y-2">
               <p className="text-sm font-semibold text-amber-400">{error}</p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-dark-secondary">
                 Tip: Many social platforms (like WhatsApp, Twitter, and Instagram) strip EXIF metadata upon upload to protect user privacy.
               </p>
             </div>
@@ -154,25 +154,25 @@ export default function ExifViewer() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Camera & Hardware */}
               <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-3">
-                <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs tracking-wider uppercase">
+                <div className="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-semibold text-xs tracking-wider uppercase">
                   <Camera className="w-4 h-4" /> Camera & Hardware
                 </div>
                 <dl className="divide-y divide-slate-800 text-xs">
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Make / Brand</dt>
-                    <dd className="font-medium text-slate-100">{metadata.Make || 'Not specified'}</dd>
+                    <dt className="text-dark-secondary">Make / Brand</dt>
+                    <dd className="font-medium text-dark-text">{metadata.Make || 'Not specified'}</dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Camera Model</dt>
-                    <dd className="font-medium text-slate-100">{metadata.Model || 'Not specified'}</dd>
+                    <dt className="text-dark-secondary">Camera Model</dt>
+                    <dd className="font-medium text-dark-text">{metadata.Model || 'Not specified'}</dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Lens Model</dt>
-                    <dd className="font-medium text-slate-100">{metadata.LensModel || 'Not specified'}</dd>
+                    <dt className="text-dark-secondary">Lens Model</dt>
+                    <dd className="font-medium text-dark-text">{metadata.LensModel || 'Not specified'}</dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Software / Firmware</dt>
-                    <dd className="font-medium text-slate-100">{metadata.Software || 'Not specified'}</dd>
+                    <dt className="text-dark-secondary">Software / Firmware</dt>
+                    <dd className="font-medium text-dark-text">{metadata.Software || 'Not specified'}</dd>
                   </div>
                 </dl>
               </div>
@@ -184,22 +184,26 @@ export default function ExifViewer() {
                 </div>
                 <dl className="divide-y divide-slate-800 text-xs">
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Shutter Speed</dt>
-                    <dd className="font-medium text-slate-100">
-                      {metadata.ExposureTime ? `1/${Math.round(1 / metadata.ExposureTime)}s (${metadata.ExposureTime}s)` : 'Not specified'}
+                    <dt className="text-dark-secondary">Shutter Speed</dt>
+                    <dd className="font-medium text-dark-text">
+                      {metadata.ExposureTime
+                        ? metadata.ExposureTime >= 1
+                          ? `${metadata.ExposureTime}s`
+                          : `1/${Math.round(1 / metadata.ExposureTime)}s`
+                        : 'Not specified'}
                     </dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Aperture (F-Stop)</dt>
-                    <dd className="font-medium text-slate-100">{metadata.FNumber ? `f/${metadata.FNumber}` : 'Not specified'}</dd>
+                    <dt className="text-dark-secondary">Aperture (F-Stop)</dt>
+                    <dd className="font-medium text-dark-text">{metadata.FNumber ? `f/${metadata.FNumber}` : 'Not specified'}</dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">ISO Speed</dt>
-                    <dd className="font-medium text-slate-100">{metadata.ISO || 'Not specified'}</dd>
+                    <dt className="text-dark-secondary">ISO Speed</dt>
+                    <dd className="font-medium text-dark-text">{metadata.ISO || 'Not specified'}</dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Focal Length</dt>
-                    <dd className="font-medium text-slate-100">
+                    <dt className="text-dark-secondary">Focal Length</dt>
+                    <dd className="font-medium text-dark-text">
                       {metadata.FocalLength ? `${metadata.FocalLength} mm` : 'Not specified'}
                     </dd>
                   </div>
@@ -213,20 +217,22 @@ export default function ExifViewer() {
                 </div>
                 <dl className="divide-y divide-slate-800 text-xs">
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Original Date Taken</dt>
-                    <dd className="font-medium text-slate-100">
+                    <dt className="text-dark-secondary">Original Date Taken</dt>
+                    <dd className="font-medium text-dark-text">
                       {metadata.DateTimeOriginal ? new Date(metadata.DateTimeOriginal).toLocaleString() : 'Not recorded'}
                     </dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Resolution</dt>
-                    <dd className="font-medium text-slate-100">
-                      {metadata.ExifImageWidth || metadata.ImageWidth} × {metadata.ExifImageHeight || metadata.ImageHeight} px
+                    <dt className="text-dark-secondary">Resolution</dt>
+                    <dd className="font-medium text-dark-text">
+                      {(metadata.ExifImageWidth || metadata.ImageWidth) && (metadata.ExifImageHeight || metadata.ImageHeight)
+                        ? `${metadata.ExifImageWidth || metadata.ImageWidth} × ${metadata.ExifImageHeight || metadata.ImageHeight} px`
+                        : 'Not recorded'}
                     </dd>
                   </div>
                   <div className="py-2 flex justify-between">
-                    <dt className="text-slate-400">Orientation</dt>
-                    <dd className="font-medium text-slate-100">{metadata.Orientation ? `Orientation ${metadata.Orientation}` : '1 (Normal)'}</dd>
+                    <dt className="text-dark-secondary">Orientation</dt>
+                    <dd className="font-medium text-dark-text">{metadata.Orientation ? `Orientation ${metadata.Orientation}` : '1 (Normal)'}</dd>
                   </div>
                 </dl>
               </div>
@@ -240,17 +246,17 @@ export default function ExifViewer() {
                   <div className="space-y-3">
                     <dl className="divide-y divide-slate-800 text-xs">
                       <div className="py-2 flex justify-between">
-                        <dt className="text-slate-400">Latitude</dt>
-                        <dd className="font-mono text-slate-100">{metadata.latitude.toFixed(6)}°</dd>
+                        <dt className="text-dark-secondary">Latitude</dt>
+                        <dd className="font-mono text-dark-text">{metadata.latitude.toFixed(6)}°</dd>
                       </div>
                       <div className="py-2 flex justify-between">
-                        <dt className="text-slate-400">Longitude</dt>
-                        <dd className="font-mono text-slate-100">{metadata.longitude.toFixed(6)}°</dd>
+                        <dt className="text-dark-secondary">Longitude</dt>
+                        <dd className="font-mono text-dark-text">{metadata.longitude.toFixed(6)}°</dd>
                       </div>
                       {metadata.altitude && (
                         <div className="py-2 flex justify-between">
-                          <dt className="text-slate-400">Altitude</dt>
-                          <dd className="font-medium text-slate-100">{Math.round(metadata.altitude)} meters</dd>
+                          <dt className="text-dark-secondary">Altitude</dt>
+                          <dd className="font-medium text-dark-text">{Math.round(metadata.altitude)} meters</dd>
                         </div>
                       )}
                     </dl>
@@ -264,7 +270,7 @@ export default function ExifViewer() {
                     </a>
                   </div>
                 ) : (
-                  <div className="py-4 text-center text-xs text-slate-500">
+                  <div className="py-4 text-center text-xs text-dark-muted">
                     No GPS coordinates detected in this file.
                   </div>
                 )}

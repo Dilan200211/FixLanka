@@ -92,7 +92,7 @@ export default function JsonFormatter() {
       {/* Top Action Bar */}
       <div className="p-4 rounded-xl bg-dark-surface border border-dark-border flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <label className="text-slate-300 font-medium">Indent:</label>
+          <label className="text-dark-secondary font-medium">Indent:</label>
           <select
             value={indentation}
             onChange={(e) => {
@@ -100,7 +100,7 @@ export default function JsonFormatter() {
               setIndentation(val);
               formatJson(val);
             }}
-            className="px-2.5 py-1.5 bg-dark-card border border-slate-700/60 rounded-lg text-slate-100"
+            className="px-2.5 py-1.5 bg-dark-card border border-dark-border rounded-lg text-dark-text"
           >
             <option value={2}>2 Spaces</option>
             <option value={4}>4 Spaces</option>
@@ -110,14 +110,14 @@ export default function JsonFormatter() {
           <button
             type="button"
             onClick={minifyJson}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary transition-colors"
           >
             <Minimize2 className="w-3.5 h-3.5" /> Minify
           </button>
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 cursor-pointer transition-colors flex items-center gap-1.5">
+          <label className="px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary cursor-pointer transition-colors flex items-center gap-1.5">
             <FileText className="w-3.5 h-3.5" /> Open File
             <input type="file" accept=".json,application/json,text/plain" onChange={handleFileUpload} className="hidden" />
           </label>
@@ -125,16 +125,16 @@ export default function JsonFormatter() {
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? 'Copied' : 'Copy'}
           </button>
 
           <button
             type="button"
             onClick={handleDownload}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium transition-colors"
           >
             <Download className="w-3.5 h-3.5" /> Download
           </button>
@@ -161,7 +161,7 @@ export default function JsonFormatter() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Raw Input */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-slate-400 font-medium">
+          <div className="flex items-center justify-between text-dark-secondary font-medium">
             <span>Input JSON:</span>
             <span>{formatBytes(new Blob([inputJson]).size)}</span>
           </div>
@@ -172,12 +172,12 @@ export default function JsonFormatter() {
               setInputJson(e.target.value);
             }}
             placeholder="Paste raw JSON here..."
-            className="w-full p-3.5 bg-dark-card border border-slate-700/60 rounded-xl text-slate-100 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/50 leading-relaxed resize-y"
+            className="w-full p-3.5 bg-dark-card border border-dark-border rounded-xl text-dark-text font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/50 leading-relaxed resize-y"
           />
           <button
             type="button"
             onClick={() => formatJson(indentation)}
-            className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow flex items-center justify-center gap-2"
+            className="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-all shadow flex items-center justify-center gap-2"
           >
             <Braces className="w-4 h-4" /> Format & Validate JSON
           </button>
@@ -185,10 +185,10 @@ export default function JsonFormatter() {
 
         {/* Output */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-slate-400 font-medium">
+          <div className="flex items-center justify-between text-dark-secondary font-medium">
             <span>Formatted Output:</span>
             {metrics && (
-              <span className="text-emerald-400 font-mono">
+              <span className="text-brand-600 dark:text-brand-400 font-mono">
                 {metrics.keys} keys • {formatBytes(metrics.size)}
               </span>
             )}
@@ -198,7 +198,7 @@ export default function JsonFormatter() {
             rows={16}
             value={outputJson || (errorInfo ? '' : inputJson)}
             placeholder="Formatted JSON will appear here..."
-            className="w-full p-3.5 bg-dark-surface border border-slate-800 rounded-xl text-slate-100 font-mono text-xs focus:outline-none leading-relaxed resize-y"
+            className="w-full p-3.5 bg-dark-surface border border-dark-border rounded-xl text-dark-text font-mono text-xs focus:outline-none leading-relaxed resize-y"
           />
         </div>
       </div>

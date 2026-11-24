@@ -4,32 +4,36 @@
 
 @layer base {
   :root {
-    --bg-primary: #ffffff;
-    --bg-surface: #f8fafc;
-    --bg-card: #ffffff;
-    --border-color: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-    --accent: #10b981;
-    --accent-hover: #059669;
+    --surface-shell-rgb: 241 245 249;     /* #f1f5f9 */
+    --surface-page-rgb: 248 250 252;      /* #f8fafc */
+    --surface-card-rgb: 255 255 255;      /* #ffffff */
+    --surface-raised-rgb: 238 242 247;    /* #eef2f7 */
+    --border-hairline: rgba(15, 23, 42, 0.09);
+    --border-strong: rgba(15, 23, 42, 0.16);
+    --text-main-rgb: 15 23 42;            /* #0f172a */
+    --text-body-rgb: 71 85 105;           /* #475569 */
+    --text-muted-rgb: 100 116 139;        /* #64748b */
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
   }
 
   .dark {
-    --bg-primary: #0a0c10;
-    --bg-surface: #10141d;
-    --bg-card: #151b26;
-    --border-color: #212936;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --accent: #10b981;
-    --accent-hover: #34d399;
+    --surface-shell-rgb: 7 9 15;          /* #07090f */
+    --surface-page-rgb: 11 15 23;         /* #0b0f17 */
+    --surface-card-rgb: 17 22 34;         /* #111622 */
+    --surface-raised-rgb: 25 32 48;       /* #192030 */
+    --border-hairline: rgba(226, 232, 240, 0.08);
+    --border-strong: rgba(226, 232, 240, 0.16);
+    --text-main-rgb: 241 245 249;         /* #f1f5f9 */
+    --text-body-rgb: 148 163 184;         /* #94a3b8 */
+    --text-muted-rgb: 100 116 139;        /* #64748b */
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
   }
 
   body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
+    background-color: rgb(var(--surface-page-rgb));
+    color: rgb(var(--text-main-rgb));
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -47,20 +51,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a3447;
+  background: rgba(100, 116, 139, 0.35);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3c4b64;
-}
-
-/* Subtle glow effects */
-.glow-accent {
-  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
-}
-
-.glow-card:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  border-color: #2f3b4e;
+  background: rgba(100, 116, 139, 0.55);
 }

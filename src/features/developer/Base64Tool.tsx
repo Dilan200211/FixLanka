@@ -105,7 +105,7 @@ export default function Base64Tool() {
       {/* Mode Navigation Bar */}
       <div className="p-4 rounded-xl bg-dark-surface border border-dark-border flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <div className="flex bg-dark-card p-1 rounded-lg border border-slate-700/60">
+          <div className="flex bg-dark-card p-1 rounded-lg border border-dark-border">
             <button
               type="button"
               onClick={() => {
@@ -113,7 +113,7 @@ export default function Base64Tool() {
                 setInputText('FixLanka Tools — Privacy First 🔒');
               }}
               className={`px-4 py-1.5 rounded-md font-semibold transition-all ${
-                mode === 'encode' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
+                mode === 'encode' ? 'bg-brand-600 text-white' : 'text-dark-secondary hover:text-white'
               }`}
             >
               Encode
@@ -125,41 +125,41 @@ export default function Base64Tool() {
                 setInputText('Rml4TGFua2EgVG9vbHMg4oCUIFByaXZhY3kgRmlyc3Qg8J+UkQ==');
               }}
               className={`px-4 py-1.5 rounded-md font-semibold transition-all ${
-                mode === 'decode' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
+                mode === 'decode' ? 'bg-brand-600 text-white' : 'text-dark-secondary hover:text-white'
               }`}
             >
               Decode
             </button>
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer ml-3 text-slate-300 font-medium">
+          <label className="flex items-center gap-2 cursor-pointer ml-3 text-dark-secondary font-medium">
             <input
               type="checkbox"
               checked={urlSafe}
               onChange={(e) => setUrlSafe(e.target.checked)}
-              className="w-4 h-4 rounded accent-emerald-500 bg-dark-card border-slate-700"
+              className="w-4 h-4 rounded accent-brand-600 bg-dark-card border-dark-border"
             />
             <span>URL-Safe Base64</span>
           </label>
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 cursor-pointer transition-colors flex items-center gap-1.5">
+          <label className="px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary cursor-pointer transition-colors flex items-center gap-1.5">
             <Upload className="w-3.5 h-3.5" /> Upload File
             <input type="file" onChange={handleFileUpload} className="hidden" />
           </label>
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-slate-700/60 hover:border-slate-500 text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-dark-secondary transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? 'Copied' : 'Copy'}
           </button>
           <button
             type="button"
             onClick={handleDownload}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium transition-colors"
           >
             <Download className="w-3.5 h-3.5" /> Download
           </button>
@@ -177,7 +177,7 @@ export default function Base64Tool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Input */}
         <div className="space-y-2">
-          <label className="block text-slate-400 font-medium">
+          <label className="block text-dark-secondary font-medium">
             {mode === 'encode' ? 'Text or Payload to Encode (UTF-8):' : 'Base64 String to Decode:'}
           </label>
           <textarea
@@ -185,13 +185,13 @@ export default function Base64Tool() {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Type or paste text..."
-            className="w-full p-3.5 bg-dark-card border border-slate-700/60 rounded-xl text-slate-100 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/50 leading-relaxed resize-y"
+            className="w-full p-3.5 bg-dark-card border border-dark-border rounded-xl text-dark-text font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/50 leading-relaxed resize-y"
           />
         </div>
 
         {/* Output */}
         <div className="space-y-2">
-          <label className="block text-slate-400 font-medium">
+          <label className="block text-dark-secondary font-medium">
             {mode === 'encode' ? 'Base64 Output:' : 'Decoded UTF-8 Text:'}
           </label>
           <textarea
@@ -199,7 +199,7 @@ export default function Base64Tool() {
             rows={12}
             value={outputText}
             placeholder="Processed output..."
-            className="w-full p-3.5 bg-dark-surface border border-slate-800 rounded-xl text-slate-100 font-mono text-xs focus:outline-none leading-relaxed resize-y break-all"
+            className="w-full p-3.5 bg-dark-surface border border-dark-border rounded-xl text-dark-text font-mono text-xs focus:outline-none leading-relaxed resize-y break-all"
           />
         </div>
       </div>

@@ -23,6 +23,7 @@ export default function ImageConverter() {
   const [bgColor, setBgColor] = useState<string>('#FFFFFF');
   const [convertedItems, setConvertedItems] = useState<ConvertedFileItem[]>([]);
   const [processing, setProcessing] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const convertFile = async (file: File): Promise<ConvertedFileItem> => {
     const objectUrl = URL.createObjectURL(file);
@@ -82,6 +83,7 @@ export default function ImageConverter() {
   const handleFilesSelected = async (files: File[]) => {
     if (files.length === 0) return;
     setProcessing(true);
+    setError(null);
 
     try {
       const results: ConvertedFileItem[] = [];
@@ -90,8 +92,9 @@ export default function ImageConverter() {
         results.push(item);
       }
       setConvertedItems((prev) => [...prev, ...results]);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Conversion batch error:', err);
+      setError(err?.message || 'Could not convert one or more images. Ensure the file format is supported.');
     } finally {
       setProcessing(false);
     }
@@ -120,7 +123,7 @@ export default function ImageConverter() {
       {/* Format Selection Bar */}
       <div className="p-5 rounded-xl bg-dark-surface border border-dark-border grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
         <div>
-          <label className="block text-slate-300 font-medium mb-1.5">Convert Target Format</label>
+          <label className="block text-dark-secondary font-medium mb-1.5">Convert Target Format</label>
           <div className="flex gap-2">
             {[
               { id: 'image/webp', label: 'WebP (Modern & Compact)' },
@@ -133,8 +136,8 @@ export default function ImageConverter() {
                 onClick={() => setTargetFormat(fmt.id as any)}
                 className={`flex-1 py-2 px-3 rounded-lg border text-center font-medium transition-all ${
                   targetFormat === fmt.id
-                    ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 font-bold'
-                    : 'bg-dark-card border-slate-700/60 text-slate-300 hover:border-slate-600'
+                    ? 'bg-brand-500/10 border-brand-500 text-brand-600 dark:text-brand-400 font-bold'
+                    : 'bg-dark-card border-dark-border text-dark-secondary hover:border-brand-500/40'
                 }`}
               >
                 {fmt.label}
@@ -145,16 +148,16 @@ export default function ImageConverter() {
 
         {targetFormat === 'image/jpeg' && (
           <div>
-            <label className="block text-slate-300 font-medium mb-1.5">Background Fill Color (for transparent sources)</label>
+            <label className="block text-dark-secondary font-medium mb-1.5">Background Fill Color (for transparent sources)</label>
             <div className="flex items-center gap-2">
               <input
                 type="color"
                 value={bgColor}
                 onChange={(e) => setBgColor(e.target.value)}
-                className="w-8 h-8 rounded border border-slate-700 bg-transparent cursor-pointer"
+                className="w-8 h-8 rounded border border-dark-border bg-transparent cursor-pointer"
               />
-              <span className="font-mono text-slate-300 uppercase">{bgColor}</span>
-              <span className="text-[11px] text-slate-500">(Fills transparent alpha pixels)</span>
+              <span className="font-mono text-dark-secondary uppercase">{bgColor}</span>
+              <span className="text-[11px] text-dark-muted">(Fills transparent alpha pixels)</span>
             </div>
           </div>
         )}
@@ -171,9 +174,15 @@ export default function ImageConverter() {
       />
 
       {processing && (
-        <div className="p-8 text-center text-slate-400">
-          <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+        <div className="p-8 text-center text-dark-secondary">
+          <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
           <p className="text-xs font-medium">Re-encoding bitmaps to {targetFormat} in browser memory...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+          {error}
         </div>
       )}
 
@@ -181,8 +190,8 @@ export default function ImageConverter() {
       {convertedItems.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-              <Layers className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-dark-secondary flex items-center gap-2">
+              <Layers className="w-4 h-4 text-brand-600 dark:text-brand-400" />
               Converted Images ({convertedItems.length})
             </h3>
 
@@ -190,14 +199,14 @@ export default function ImageConverter() {
               <button
                 type="button"
                 onClick={handleDownloadAll}
-                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow"
+                className="px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow"
               >
                 <Download className="w-3.5 h-3.5" /> Download All
               </button>
               <button
                 type="button"
                 onClick={handleClear}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"
+                className="px-3 py-1.5 rounded-lg bg-dark-raised hover:bg-dark-raised text-dark-secondary text-xs"
               >
                 <RefreshCw className="w-3.5 h-3.5" /> Clear
               </button>
@@ -214,16 +223,16 @@ export default function ImageConverter() {
                   <img
                     src={item.previewUrl}
                     alt={item.originalName}
-                    className="w-14 h-14 object-cover rounded-lg border border-slate-700"
+                    className="w-14 h-14 object-cover rounded-lg border border-dark-border"
                   />
                   <div>
-                    <p className="text-sm font-semibold text-white truncate max-w-xs">{item.originalName}</p>
-                    <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
-                      <span className="font-mono text-emerald-400 uppercase font-semibold">.{item.targetExt}</span>
+                    <p className="text-sm font-semibold text-dark-text truncate max-w-xs">{item.originalName}</p>
+                    <div className="flex items-center gap-2 text-xs text-dark-secondary mt-0.5">
+                      <span className="font-mono text-brand-600 dark:text-brand-400 uppercase font-semibold">.{item.targetExt}</span>
                       <span>•</span>
                       <span>{formatBytes(item.convertedSize)}</span>
                       <span>•</span>
-                      <span className="flex items-center gap-1 text-[11px] text-emerald-400">
+                      <span className="flex items-center gap-1 text-[11px] text-brand-600 dark:text-brand-400">
                         <CheckCircle2 className="w-3 h-3" /> Validated Magic Header
                       </span>
                     </div>
@@ -233,7 +242,7 @@ export default function ImageConverter() {
                 <button
                   type="button"
                   onClick={() => handleDownload(item)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white font-medium text-xs transition-colors flex items-center gap-1.5 ml-auto border border-slate-700"
+                  className="px-4 py-2 rounded-lg bg-dark-raised hover:bg-brand-600 text-dark-text hover:text-white font-medium text-xs transition-colors flex items-center gap-1.5 ml-auto border border-dark-border"
                 >
                   <Download className="w-3.5 h-3.5" /> Download .{item.targetExt}
                 </button>
