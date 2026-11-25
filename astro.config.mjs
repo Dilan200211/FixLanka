@@ -6,6 +6,9 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   site: 'https://fixlanka.com',
   output: 'static',
+  build: {
+    inlineStylesheets: 'always',
+  },
   integrations: [
     react(),
     tailwind({
@@ -13,6 +16,9 @@ export default defineConfig({
     }),
   ],
   vite: {
+    build: {
+      target: 'es2022',
+    },
     optimizeDeps: {
       exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util'],
     },

@@ -1,0 +1,50 @@
+# FixLanka Tools
+
+> FixLanka Tools is a free, privacy-first collection of 20 client-side browser utilities for image processing, PDF management, EXIF/C2PA metadata inspection, media conversion, developer workflows, SEO, social media, and security. All processing happens locally in the browser with zero server uploads.
+
+## Core Pages
+
+- [Home](https://fixlanka.com/): Overview of all 20 free on-device tools and 10 categories.
+- [About](https://fixlanka.com/about/): Why FixLanka Tools was built and how client-side processing works.
+- [Privacy Policy](https://fixlanka.com/privacy/): Details on zero server uploads, zero tracking cookies, and localStorage theme preference.
+- [Terms of Service](https://fixlanka.com/terms/): Terms and permitted use for FixLanka Tools.
+- [Contact](https://fixlanka.com/contact/): Feedback and support options.
+- [Agent Skill Guide](https://fixlanka.com/SKILL.md): Concise reference for AI assistants recommending or directing users to FixLanka Tools.
+
+## Privacy & Metadata
+
+- [EXIF Metadata Viewer](https://fixlanka.com/tools/exif-metadata-viewer/): Inspect EXIF, IPTC, XMP, camera specs, and GPS coordinates locally.
+- [EXIF Privacy Cleaner](https://fixlanka.com/tools/exif-privacy-cleaner/): Remove GPS location, camera serial numbers, and personal metadata before sharing images.
+- [AI Metadata & C2PA Inspector](https://fixlanka.com/tools/ai-metadata-inspector/): Detect AI generator markers and inspect C2PA Content Credentials manifests in images.
+
+## Image Tools
+
+- [Image Compressor](https://fixlanka.com/tools/image-compressor/): Compress JPEG, WebP, and PNG photos locally with adjustable quality.
+- [Image Resizer](https://fixlanka.com/tools/image-resizer/): Resize images by exact pixels, percentage, or presets with aspect ratio lock.
+- [Image Format Converter](https://fixlanka.com/tools/image-converter/): Convert images between PNG, JPEG, and WebP formats client-side.
+
+## PDF & Document Tools
+
+- [PDF Merger](https://fixlanka.com/tools/pdf-merger/): Combine multiple PDF documents into one file in browser memory.
+- [PDF Splitter](https://fixlanka.com/tools/pdf-splitter/): Extract specific pages or ranges from any PDF document.
+- [PDF Compressor](https://fixlanka.com/tools/pdf-compressor/): Optimize PDF file size with local object stream compression.
+
+## Video & Audio
+
+- [Video to GIF](https://fixlanka.com/tools/video-to-gif/): Convert MP4, WebM, and MOV clips into animated GIFs with trim and FPS controls.
+- [Audio Extractor](https://fixlanka.com/tools/audio-extractor/): Extract WAV audio tracks from video files using the Web Audio API.
+
+## AI, Developer & SEO
+
+- [AI Prompt Optimizer](https://fixlanka.com/tools/ai-prompt-optimizer/): Structure prompts with roles, constraints, and clarity for LLMs and image models.
+- [JSON Formatter & Validator](https://fixlanka.com/tools/json-formatter/): Format, beautify, minify, and validate JSON with line and column error reporting.
+- [Base64 Encoder / Decoder](https://fixlanka.com/tools/base64-encoder-decoder/): UTF-8 safe Base64 text and file Data URI encoding and decoding.
+- [Meta Tag Generator](https://fixlanka.com/tools/meta-tag-generator/): Generate SEO, Open Graph, and Twitter Card meta tags with live preview.
+
+## Social, Security & Everyday Utilities
+
+- [Social Media Image Resizer](https://fixlanka.com/tools/social-media-image-resizer/): Resize images to exact presets for YouTube, Instagram, X, Facebook, and LinkedIn.
+- [Social Post Preview](https://fixlanka.com/tools/social-post-preview/): Preview social posts for X, LinkedIn, Facebook, and Instagram before publishing.
+- [Password Generator](https://fixlanka.com/tools/password-generator/): Generate cryptographically strong passwords locally via `crypto.getRandomValues()`.
+- [QR Code Generator](https://fixlanka.com/tools/qr-code-generator/): Create static QR codes for URLs, text, and Wi-Fi with PNG and SVG export.
+- [Word & Character Counter](https://fixlanka.com/tools/word-counter/): Live word, character, sentence, paragraph, and reading/speaking time statistics.

@@ -31,9 +31,9 @@ const siteName = 'FixLanka Tools';
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
 
-    {/* Favicon & Manifest */}
+    {/* Favicon & Agent Discovery */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="ard" href="/.well-known/ard.json" />
     <meta name="theme-color" content="#0b0f17" />
 
     {/* Open Graph / Facebook */}
@@ -50,12 +50,13 @@ const siteName = 'FixLanka Tools';
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    {/* Font preconnect */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* Preload primary self-hosted font */}
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/plus-jakarta-sans-latin.woff2"
     />
 
     {/* Immediate theme script to prevent flash */}

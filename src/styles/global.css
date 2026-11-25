@@ -1,3 +1,27 @@
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-400-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-500-latin.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,7 +36,7 @@
     --border-strong: rgba(15, 23, 42, 0.16);
     --text-main-rgb: 15 23 42;            /* #0f172a */
     --text-body-rgb: 71 85 105;           /* #475569 */
-    --text-muted-rgb: 100 116 139;        /* #64748b */
+    --text-muted-rgb: 82 96 117;          /* #526075 - WCAG AA >= 4.5:1 on all light surfaces */
     --accent: #2563eb;
     --accent-hover: #1d4ed8;
   }
@@ -26,7 +50,7 @@
     --border-strong: rgba(226, 232, 240, 0.16);
     --text-main-rgb: 241 245 249;         /* #f1f5f9 */
     --text-body-rgb: 148 163 184;         /* #94a3b8 */
-    --text-muted-rgb: 100 116 139;        /* #64748b */
+    --text-muted-rgb: 138 154 176;        /* #8a9ab0 - WCAG AA >= 4.5:1 on all dark surfaces */
     --accent: #3b82f6;
     --accent-hover: #2563eb;
   }

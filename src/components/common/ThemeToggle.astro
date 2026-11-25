@@ -1,0 +1,62 @@
+---
+---
+
+<button
+  id="theme-toggle-btn"
+  type="button"
+  class="p-2 rounded-lg border border-dark-border bg-dark-card hover:bg-dark-raised text-dark-secondary hover:text-dark-text transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+  aria-label="Toggle visual theme"
+  title="Toggle visual theme"
+>
+  <svg
+    class="hidden dark:block w-4 h-4 text-amber-400"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2"></path>
+    <path d="M12 20v2"></path>
+    <path d="m4.93 4.93 1.41 1.41"></path>
+    <path d="m17.66 17.66 1.41 1.41"></path>
+    <path d="M2 12h2"></path>
+    <path d="M20 12h2"></path>
+    <path d="m6.34 17.66-1.41 1.41"></path>
+    <path d="m19.07 4.93-1.41 1.41"></path>
+  </svg>
+  <svg
+    class="block dark:hidden w-4 h-4 text-dark-secondary"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+  </svg>
+</button>
+
+<script>
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) {
+    const syncTitle = () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+    };
+    syncTitle();
+    btn.addEventListener('click', () => {
+      const nextDark = !document.documentElement.classList.contains('dark');
+      document.documentElement.classList.toggle('dark', nextDark);
+      try {
+        localStorage.setItem('theme', nextDark ? 'dark' : 'light');
+      } catch {}
+      syncTitle();
+    });
+  }
+</script>

@@ -1,6 +1,6 @@
 ---
-import ThemeToggle from '../common/ThemeToggle';
-import SearchModal from '../search/SearchModal';
+import ThemeToggle from '../common/ThemeToggle.astro';
+import SearchModal from '../search/SearchModal.astro';
 import { MAIN_NAV } from '../../data/navigation';
 ---
 
@@ -33,8 +33,8 @@ import { MAIN_NAV } from '../../data/navigation';
 
     {/* Search & Actions */}
     <div class="flex items-center gap-2.5">
-      <SearchModal client:idle />
-      <ThemeToggle client:idle />
+      <SearchModal />
+      <ThemeToggle />
 
       {/* Mobile Menu Button */}
       <button

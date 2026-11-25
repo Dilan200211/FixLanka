@@ -1,0 +1,190 @@
+---
+---
+
+<div id="hero-search-container" class="relative w-full max-w-xl">
+  <form
+    id="hero-search-form"
+    class="relative flex items-center w-full shadow-sm dark:shadow-none rounded-xl"
+    role="search"
+  >
+    <div class="relative flex-grow flex items-center">
+      <svg
+        class="absolute left-3.5 w-4 h-4 text-dark-muted pointer-events-none"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m21 21-4.34-4.34"></path>
+        <circle cx="11" cy="11" r="8"></circle>
+      </svg>
+      <input
+        id="hero-search-input"
+        type="text"
+        placeholder="Search for a tool... (e.g. compress photo, merge pdf, qr code)"
+        aria-label="Search for a tool"
+        autocomplete="off"
+        class="w-full pl-10 pr-12 py-3 bg-dark-card border border-dark-border border-r-0 focus:border-brand-500 rounded-l-xl text-sm text-dark-text placeholder-dark-muted focus:outline-none transition-colors"
+      />
+      <button
+        id="hero-search-clear"
+        type="button"
+        aria-label="Clear search"
+        class="hidden absolute right-3 p-1 text-dark-muted hover:text-dark-text"
+      >
+        <svg
+          class="w-3.5 h-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <button
+      type="submit"
+      class="px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm rounded-r-xl border border-brand-600 transition-colors flex-shrink-0 flex items-center gap-1.5"
+    >
+      <span>Search</span>
+    </button>
+  </form>
+
+  <div
+    id="hero-search-results"
+    class="hidden absolute top-full left-0 right-0 mt-2 z-30 bg-dark-card border border-dark-border rounded-xl shadow-xl overflow-hidden divide-y divide-dark-border"
+  ></div>
+</div>
+
+<script>
+  interface SearchTool {
+    slug: string;
+    name: string;
+    category: string;
+    shortDescription: string;
+    keywords: string[];
+  }
+
+  const container = document.getElementById('hero-search-container');
+  const form = document.getElementById('hero-search-form');
+  const input = document.getElementById('hero-search-input') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('hero-search-clear');
+  const resultsEl = document.getElementById('hero-search-results');
+  const indexEl = document.getElementById('fixlanka-search-index');
+
+  if (container && form && input && clearBtn && resultsEl && indexEl) {
+    const tools: SearchTool[] = JSON.parse(indexEl.textContent || '[]');
+    let currentResults: SearchTool[] = [];
+
+    const createRow = (tool: SearchTool) => {
+      const a = document.createElement('a');
+      a.href = `/tools/${tool.slug}`;
+      a.className = 'flex items-center justify-between p-3.5 hover:bg-dark-raised/60 transition-colors group';
+
+      const left = document.createElement('div');
+      const top = document.createElement('div');
+      top.className = 'flex items-center gap-2';
+
+      const name = document.createElement('span');
+      name.className = 'text-sm font-medium text-dark-text group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors';
+      name.textContent = tool.name;
+
+      const cat = document.createElement('span');
+      cat.className = 'text-xs font-mono px-2 py-0.5 rounded bg-dark-surface text-dark-muted border border-dark-border';
+      cat.textContent = tool.category;
+
+      top.append(name, cat);
+
+      const desc = document.createElement('p');
+      desc.className = 'text-xs text-dark-secondary mt-0.5 line-clamp-1';
+      desc.textContent = tool.shortDescription;
+
+      left.append(top, desc);
+
+      const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      arrow.setAttribute('class', 'w-4 h-4 text-dark-muted group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors flex-shrink-0 ml-3');
+      arrow.setAttribute('viewBox', '0 0 24 24');
+      arrow.setAttribute('fill', 'none');
+      arrow.setAttribute('stroke', 'currentColor');
+      arrow.setAttribute('stroke-width', '2');
+      arrow.setAttribute('aria-hidden', 'true');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', 'M5 12h14M12 5l7 7-7 7');
+      p.setAttribute('stroke-linecap', 'round');
+      p.setAttribute('stroke-linejoin', 'round');
+      arrow.appendChild(p);
+
+      a.append(left, arrow);
+      return a;
+    };
+
+    const update = (showDropdown: boolean) => {
+      const raw = input.value;
+      const q = raw.toLowerCase().trim();
+      clearBtn.classList.toggle('hidden', !q);
+
+      if (!q) {
+        currentResults = [];
+        resultsEl.classList.add('hidden');
+        resultsEl.replaceChildren();
+        return;
+      }
+
+      currentResults = tools
+        .filter(
+          (t) =>
+            t.name.toLowerCase().includes(q) ||
+            t.shortDescription.toLowerCase().includes(q) ||
+            t.keywords.some((k) => k.toLowerCase().includes(q)) ||
+            t.category.toLowerCase().includes(q)
+        )
+        .slice(0, 6);
+
+      resultsEl.replaceChildren();
+      if (currentResults.length > 0) {
+        for (const tool of currentResults) {
+          resultsEl.appendChild(createRow(tool));
+        }
+      } else {
+        const empty = document.createElement('div');
+        empty.className = 'p-4 text-center text-xs text-dark-secondary';
+        empty.textContent = `No tools matching "${raw}". Try "photo", "pdf", or "qr code".`;
+        resultsEl.appendChild(empty);
+      }
+
+      resultsEl.classList.toggle('hidden', !showDropdown);
+    };
+
+    input.addEventListener('input', () => update(true));
+    input.addEventListener('focus', () => {
+      if (input.value.trim()) update(true);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      update(false);
+      input.focus();
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (currentResults.length > 0) {
+        window.location.href = `/tools/${currentResults[0].slug}`;
+      }
+    });
+
+    document.addEventListener('mousedown', (e) => {
+      if (!container.contains(e.target as Node)) {
+        resultsEl.classList.add('hidden');
+      }
+    });
+  }
+</script>

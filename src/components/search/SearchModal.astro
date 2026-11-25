@@ -1,0 +1,238 @@
+---
+import { TOOLS } from '../../data/tools';
+
+const searchIndex = TOOLS.map((t) => ({
+  slug: t.slug,
+  name: t.name,
+  category: t.category,
+  shortDescription: t.shortDescription,
+  keywords: t.keywords,
+}));
+---
+
+<script
+  type="application/json"
+  id="fixlanka-search-index"
+  set:html={JSON.stringify(searchIndex)}
+/>
+
+<button
+  id="search-modal-trigger"
+  type="button"
+  class="flex items-center gap-2 px-3 py-1.5 text-xs text-dark-secondary bg-dark-surface hover:bg-dark-raised border border-dark-border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+  aria-label="Search tools"
+>
+  <svg
+    class="w-3.5 h-3.5 text-dark-muted"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m21 21-4.34-4.34"></path>
+    <circle cx="11" cy="11" r="8"></circle>
+  </svg>
+  <span class="hidden sm:inline">Search tools</span>
+  <span class="sm:hidden">Search</span>
+  <kbd class="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[11px] font-mono bg-dark-card border border-dark-border rounded text-dark-muted">
+    ⌘K
+  </kbd>
+</button>
+
+<div
+  id="search-modal-backdrop"
+  class="hidden fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/60 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Search tools"
+>
+  <div
+    id="search-modal-panel"
+    class="w-full max-w-xl bg-dark-card border border-dark-border rounded-xl shadow-2xl overflow-hidden"
+  >
+    <div class="flex items-center px-4 py-3.5 border-b border-dark-border">
+      <svg
+        class="w-4 h-4 text-brand-600 dark:text-brand-400 mr-3 flex-shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m21 21-4.34-4.34"></path>
+        <circle cx="11" cy="11" r="8"></circle>
+      </svg>
+      <input
+        id="search-modal-input"
+        type="text"
+        placeholder="Search tools or tasks (compress photo, merge pdf, qr)..."
+        aria-label="Search tools or tasks"
+        class="w-full bg-transparent text-dark-text placeholder-dark-muted text-sm focus:outline-none"
+      />
+      <button
+        id="search-modal-close"
+        type="button"
+        aria-label="Close search modal"
+        class="p-1 text-dark-muted hover:text-dark-text rounded"
+      >
+        <svg
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div
+      id="search-modal-results"
+      class="max-h-96 overflow-y-auto p-2 divide-y divide-dark-border"
+    ></div>
+
+    <div class="px-4 py-2.5 bg-dark-bg border-t border-dark-border flex items-center justify-between text-xs text-dark-muted font-mono">
+      <span>
+        Press <kbd class="px-1 py-0.5 bg-dark-card border border-dark-border rounded text-dark-secondary">ESC</kbd> to exit
+      </span>
+      <span class="flex items-center gap-1.5 text-dark-secondary">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span>On-device privacy</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface SearchTool {
+    slug: string;
+    name: string;
+    category: string;
+    shortDescription: string;
+    keywords: string[];
+  }
+
+  const indexEl = document.getElementById('fixlanka-search-index');
+  const trigger = document.getElementById('search-modal-trigger');
+  const backdrop = document.getElementById('search-modal-backdrop');
+  const panel = document.getElementById('search-modal-panel');
+  const input = document.getElementById('search-modal-input') as HTMLInputElement | null;
+  const closeBtn = document.getElementById('search-modal-close');
+  const resultsEl = document.getElementById('search-modal-results');
+
+  if (indexEl && trigger && backdrop && panel && input && closeBtn && resultsEl) {
+    const tools: SearchTool[] = JSON.parse(indexEl.textContent || '[]');
+    let isOpen = false;
+
+    const createResultNode = (tool: SearchTool) => {
+      const a = document.createElement('a');
+      a.href = `/tools/${tool.slug}`;
+      a.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-dark-raised/60 group transition-colors';
+      a.addEventListener('click', () => setOpen(false));
+
+      const left = document.createElement('div');
+      const top = document.createElement('div');
+      top.className = 'flex items-center gap-2';
+
+      const name = document.createElement('span');
+      name.className = 'text-sm font-medium text-dark-text group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors';
+      name.textContent = tool.name;
+
+      const cat = document.createElement('span');
+      cat.className = 'text-xs font-mono px-2 py-0.5 rounded bg-dark-surface text-dark-muted border border-dark-border';
+      cat.textContent = tool.category;
+
+      top.append(name, cat);
+
+      const desc = document.createElement('p');
+      desc.className = 'text-xs text-dark-secondary mt-0.5 line-clamp-1';
+      desc.textContent = tool.shortDescription;
+
+      left.append(top, desc);
+
+      const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      arrow.setAttribute('class', 'w-4 h-4 text-dark-muted group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors ml-2 flex-shrink-0');
+      arrow.setAttribute('viewBox', '0 0 24 24');
+      arrow.setAttribute('fill', 'none');
+      arrow.setAttribute('stroke', 'currentColor');
+      arrow.setAttribute('stroke-width', '2');
+      arrow.setAttribute('aria-hidden', 'true');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', 'M5 12h14M12 5l7 7-7 7');
+      p.setAttribute('stroke-linecap', 'round');
+      p.setAttribute('stroke-linejoin', 'round');
+      arrow.appendChild(p);
+
+      a.append(left, arrow);
+      return a;
+    };
+
+    const renderResults = (qRaw: string) => {
+      const q = qRaw.toLowerCase().trim();
+      const filtered = q
+        ? tools.filter(
+            (t) =>
+              t.name.toLowerCase().includes(q) ||
+              t.shortDescription.toLowerCase().includes(q) ||
+              t.keywords.some((k) => k.toLowerCase().includes(q)) ||
+              t.category.toLowerCase().includes(q)
+          )
+        : tools.slice(0, 6);
+
+      resultsEl.replaceChildren();
+      if (filtered.length > 0) {
+        for (const tool of filtered) {
+          resultsEl.appendChild(createResultNode(tool));
+        }
+      } else {
+        const empty = document.createElement('div');
+        empty.className = 'py-8 text-center text-dark-secondary text-sm';
+        const p1 = document.createElement('p');
+        p1.textContent = `No tools matched "${qRaw}"`;
+        const p2 = document.createElement('p');
+        p2.className = 'text-xs text-dark-muted mt-1';
+        p2.textContent = 'Try keywords like photo, pdf, qr code, or password.';
+        empty.append(p1, p2);
+        resultsEl.appendChild(empty);
+      }
+    };
+
+    const setOpen = (next: boolean) => {
+      isOpen = next;
+      backdrop.classList.toggle('hidden', !next);
+      if (next) {
+        renderResults(input.value);
+        setTimeout(() => input.focus(), 50);
+      } else {
+        input.value = '';
+        resultsEl.replaceChildren();
+      }
+    };
+
+    trigger.addEventListener('click', () => setOpen(true));
+    closeBtn.addEventListener('click', () => setOpen(false));
+    backdrop.addEventListener('click', () => setOpen(false));
+    panel.addEventListener('click', (e) => e.stopPropagation());
+    input.addEventListener('input', () => renderResults(input.value));
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setOpen(!isOpen);
+      }
+      if (e.key === 'Escape' && isOpen) {
+        setOpen(false);
+      }
+    });
+  }
+</script>

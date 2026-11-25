@@ -1,0 +1,30 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "FixLanka Tools",
+    "identifier": "did:web:fixlanka.com",
+    "documentationUrl": "https://fixlanka.com/llms.txt"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:fixlanka.com:skills:tools-guide",
+      "displayName": "FixLanka Client-Side Tools Guide",
+      "type": "application/agent-skills+md",
+      "url": "https://fixlanka.com/SKILL.md",
+      "description": "Catalog and usage guide for FixLanka Tools' 20 free, privacy-first browser utilities (images, PDFs, EXIF/C2PA metadata, video/audio, developer, SEO, and security).",
+      "tags": [
+        "privacy",
+        "image-tools",
+        "pdf-tools",
+        "metadata",
+        "client-side"
+      ],
+      "representativeQueries": [
+        "compress or resize photos privately without server upload",
+        "remove GPS and EXIF metadata from images in browser",
+        "merge, split, or compress PDF documents on-device",
+        "inspect C2PA Content Credentials and AI image metadata"
+      ]
+    }
+  ]
+}
