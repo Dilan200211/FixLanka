@@ -1,94 +1,16 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import AdminDashboard, {
-  type LocalArticleSummary,
-  type SeoHealthSummary,
-} from '../../features/admin/AdminDashboard';
-import { getAllArticles } from '../../lib/blog/articles';
-import { getAllTools } from '../../data/tools';
-import { CATEGORY_LIST } from '../../data/categories';
-import { BLOG_CATEGORIES } from '../../data/blogCategories';
-
-const allArticles = await getAllArticles();
-const publishedArticles = allArticles.filter((a) => a.data.status === 'published');
-const tools = getAllTools();
-
-const localArticles: LocalArticleSummary[] = allArticles.map((entry) => ({
-  slug: entry.slug,
-  title: entry.data.title,
-  seoTitle: entry.data.seoTitle,
-  metaDescription: entry.data.metaDescription,
-  status: entry.data.status,
-  category: entry.data.category,
-  publishDate: entry.data.publishDate.toISOString(),
-  updatedDate: entry.data.updatedDate?.toISOString(),
-  noindex: entry.data.noindex,
-  relatedTools: entry.data.relatedTools,
-  wordCount: entry.body.trim().split(/\s+/).filter(Boolean).length,
-}));
-
-const titleCounts = new Map<string, number>();
-const descCounts = new Map<string, number>();
-for (const t of tools) {
-  titleCounts.set(t.seoTitle, (titleCounts.get(t.seoTitle) ?? 0) + 1);
-  descCounts.set(t.seoDescription, (descCounts.get(t.seoDescription) ?? 0) + 1);
-}
-for (const a of publishedArticles) {
-  const title = a.data.seoTitle ?? a.data.title;
-  titleCounts.set(title, (titleCounts.get(title) ?? 0) + 1);
-  descCounts.set(a.data.metaDescription, (descCounts.get(a.data.metaDescription) ?? 0) + 1);
-}
-
-const activeBlogCats = new Set(publishedArticles.map((a) => a.data.category));
-const staticSitemapCount = 11;
-const totalSitemapUrls =
-  staticSitemapCount +
-  CATEGORY_LIST.length +
-  tools.length +
-  BLOG_CATEGORIES.filter((c) => activeBlogCats.has(c.slug)).length +
-  publishedArticles.filter((a) => !a.data.noindex).length;
-
-const nowMs = Date.now();
-const staleCutoffMs = 180 * 24 * 60 * 60 * 1000;
-const articlesNeedingUpdate = publishedArticles
-  .filter((a) => nowMs - (a.data.updatedDate ?? a.data.publishDate).getTime() > staleCutoffMs)
-  .map((a) => a.slug);
-
-const seoHealth: SeoHealthSummary = {
-  totalTools: tools.length,
-  totalCategories: CATEGORY_LIST.length,
-  totalPublishedArticles: publishedArticles.length,
-  totalSitemapUrls,
-  missingMetadataCount: 0,
-  missingCanonicalCount: 0,
-  duplicateTitles: [...titleCounts.entries()].filter(([, n]) => n > 1).map(([k]) => k),
-  duplicateDescriptions: [...descCounts.entries()].filter(([, n]) => n > 1).map(([k]) => k),
-  brokenInternalLinks: [],
-  orphanPages: [],
-  missingAltImages: publishedArticles.filter((a) => !a.data.imageAlt).map((a) => a.slug),
-  articlesNeedingUpdate,
-};
+import AdminDashboard from '../../features/admin/AdminDashboard';
 ---
 
 <BaseLayout
-  title="SEO & Content Admin Dashboard — FixLanka Tools"
-  description="Internal SEO diagnostics and editorial CMS dashboard for FixLanka Tools."
+  title="Admin Sign In — FixLanka Tools"
+  description="Restricted administrative portal for FixLanka Tools."
   canonicalUrl="https://fixlanka.com/admin/"
   noindex={true}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
-    <header class="space-y-2">
-      <span class="inline-block text-xs font-mono px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
-        noindex • Internal Admin
-      </span>
-      <h1 class="text-2xl sm:text-3xl font-semibold text-dark-text tracking-tight">
-        SEO Audit &amp; Content Management Dashboard
-      </h1>
-      <p class="text-xs sm:text-sm text-dark-secondary">
-        Inspect real static content inventory, metadata hygiene, and connect Supabase Auth for live CMS editing.
-      </p>
-    </header>
-
-    <AdminDashboard client:only="react" localArticles={localArticles} seoHealth={seoHealth} />
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <h1 class="sr-only">FixLanka Tools Admin Portal</h1>
+    <AdminDashboard client:only="react" />
   </div>
 </BaseLayout>
