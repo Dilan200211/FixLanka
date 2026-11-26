@@ -89,6 +89,6 @@ const seoHealth: SeoHealthSummary = {
       </p>
     </header>
 
-    <AdminDashboard client:load localArticles={localArticles} seoHealth={seoHealth} />
+    <AdminDashboard client:only="react" localArticles={localArticles} seoHealth={seoHealth} />
   </div>
 </BaseLayout>

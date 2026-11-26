@@ -36,7 +36,7 @@ export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 let cachedClient: SupabaseClient | null = null;
 
 export function getSupabaseClient(): SupabaseClient | null {
-  if (!isSupabaseConfigured) return null;
+  if (typeof window === 'undefined' || !isSupabaseConfigured) return null;
   if (!cachedClient) {
     cachedClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
