@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+
+const schemaData = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fixlanka.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Privacy Policy', item: 'https://fixlanka.com/privacy-policy/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Privacy Policy — FixLanka Tools"
+  description="FixLanka Tools privacy policy covering local browser file processing, zero server retention, Cloudflare hosting, analytics, and ad disclosures."
+  canonicalUrl="https://fixlanka.com/privacy-policy/"
+>
+  <SchemaOrg data={schemaData} />
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+    <header class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-dark-text transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-dark-text font-medium">Privacy Policy</span>
+      </nav>
+      <span class="inline-block text-xs font-medium px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
+        Privacy Disclosure
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-semibold text-dark-text tracking-tight">
+        Privacy Policy
+      </h1>
+      <p class="text-xs text-dark-muted">
+        Effective Date: November 2026 • Last Updated: November 27, 2026
+      </p>
+    </header>
+
+    <div class="space-y-6 text-sm text-dark-secondary leading-relaxed">
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">1. Core Privacy Commitment</h2>
+        <p>
+          FixLanka Tools (<a href="https://fixlanka.com/" class="text-brand-600 dark:text-brand-400 underline">https://fixlanka.com/</a>) is designed so personal files stay on your own phone or computer. We do not require accounts, email registration, or file uploads for any utility on this site.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">2. On-Device Local Processing</h2>
+        <p>
+          Every file-handling tool on FixLanka Tools, including image compression, resizing, format conversion, PDF merging, PDF splitting, PDF compression, EXIF inspection, EXIF cleaning, C2PA inspection, video-to-GIF conversion, and audio extraction, runs locally inside your browser.
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs text-dark-secondary">
+          <li>Files you select are read in local browser memory and are not transmitted to FixLanka servers.</li>
+          <li>Temporary buffers and object URLs live only in your active browser session and are cleared when you reset the tool or close the tab.</li>
+          <li>Passwords generated with the Password Generator are produced locally via the Web Cryptography API (`window.crypto.getRandomValues()`) and are never logged or transmitted.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">3. Local Storage Preferences</h2>
+        <p>
+          We use browser <code>localStorage</code> to remember your light or dark visual theme preference.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">4. Hosting &amp; Edge Infrastructure</h2>
+        <p>
+          FixLanka Tools is served through Cloudflare. Cloudflare may process standard HTTP request metadata (such as IP addresses, user-agent headers, and timestamps) for security, DDoS mitigation, and CDN caching in accordance with Cloudflare's privacy policy.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">5. Analytics &amp; Advertising Disclosures</h2>
+        <p>
+          When Google Analytics 4 (GA4) or Google AdSense is enabled on the site, Google and its partners may use cookies or local identifiers to measure aggregate traffic, tool usage events, and ad delivery. Advertising partners may serve non-personalized or personalized ads depending on your regional consent settings and browser controls.
+        </p>
+        <p>
+          Analytics and advertising scripts never receive the contents of the images, PDFs, passwords, or text you process inside our tools.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">6. Policy Updates &amp; Contact</h2>
+        <p>
+          If any future tool requires server-side processing, that requirement will be disclosed clearly before you select or submit any file. For privacy inquiries, email <a href="mailto:contact@fixlanka.com" class="text-brand-600 dark:text-brand-400 underline">contact@fixlanka.com</a> or visit our <a href="/contact/" class="text-brand-600 dark:text-brand-400 underline">Contact Page</a>.
+        </p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

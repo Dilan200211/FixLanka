@@ -136,7 +136,7 @@ const searchIndex = TOOLS.map((t) => ({
 
     const createResultNode = (tool: SearchTool) => {
       const a = document.createElement('a');
-      a.href = `/tools/${tool.slug}`;
+      a.href = `/tools/${tool.slug}/`;
       a.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-dark-raised/60 group transition-colors';
       a.addEventListener('click', () => setOpen(false));
 

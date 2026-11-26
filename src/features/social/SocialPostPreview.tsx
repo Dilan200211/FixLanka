@@ -53,7 +53,7 @@ export default function SocialPostPreview() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Editor */}
         <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4">
-          <h3 className="font-bold text-dark-text uppercase tracking-wider">Post Details</h3>
+          <h2 className="font-bold text-dark-text uppercase tracking-wider text-xs">Post Details</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>

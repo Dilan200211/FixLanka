@@ -5,15 +5,18 @@ export interface NavItem {
 }
 
 export const MAIN_NAV: NavItem[] = [
-  { label: 'All Tools', href: '/#all-tools' },
-  { label: 'Categories', href: '/#categories' },
-  { label: 'Popular', href: '/#popular' },
-  { label: 'About', href: '/about' },
+  { label: 'Tools', href: '/tools/' },
+  { label: 'Categories', href: '/category/' },
+  { label: 'Blog', href: '/blog/' },
+  { label: 'About', href: '/about/' },
 ];
 
 export const FOOTER_LEGAL_NAV: NavItem[] = [
-  { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Service', href: '/terms' },
-  { label: 'About Us', href: '/about' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'About Us', href: '/about/' },
+  { label: 'How We Work', href: '/how-we-work/' },
+  { label: 'Editorial Policy', href: '/editorial-policy/' },
+  { label: 'Privacy Policy', href: '/privacy-policy/' },
+  { label: 'Terms of Service', href: '/terms-of-service/' },
+  { label: 'Disclaimer', href: '/disclaimer/' },
+  { label: 'Contact', href: '/contact/' },
 ];

@@ -1,9 +1,11 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import ToolCard from '../components/cards/ToolCard.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
 import type { ToolDefinition } from '../types/tool';
 import { CATEGORIES } from '../data/categories';
 import { getRelatedTools } from '../data/tools';
+import { getArticlesForTool } from '../lib/blog/articles';
 
 interface Props {
   tool: ToolDefinition;
@@ -12,64 +14,64 @@ interface Props {
 const { tool } = Astro.props;
 const category = CATEGORIES[tool.category];
 const relatedTools = getRelatedTools(tool.slug);
+const relatedArticles = await getArticlesForTool(tool.slug);
+const canonical = `https://fixlanka.com/tools/${tool.slug}/`;
 
-// Structured data for SEO (SoftwareApplication & BreadcrumbList)
-const schemaData = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebApplication',
-      name: tool.name,
-      url: `https://fixlanka.com/tools/${tool.slug}`,
-      description: tool.description,
-      applicationCategory: 'UtilityApplication',
-      operatingSystem: 'Any',
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
+const schemaData = [
+  {
+    '@type': 'SoftwareApplication',
+    name: tool.name,
+    url: canonical,
+    description: tool.description,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any (Web Browser)',
+    featureList: tool.featuresList,
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    publisher: { '@id': 'https://fixlanka.com/#organization' },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://fixlanka.com/',
       },
-    },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: 'Home',
-          item: 'https://fixlanka.com',
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: category?.name || 'Tools',
-          item: `https://fixlanka.com/categories/${tool.category}`,
-        },
-        {
-          '@type': 'ListItem',
-          position: 3,
-          name: tool.name,
-          item: `https://fixlanka.com/tools/${tool.slug}`,
-        },
-      ],
-    },
-  ],
-};
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: category?.name || 'Tools',
+        item: `https://fixlanka.com/category/${tool.category}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: tool.name,
+        item: canonical,
+      },
+    ],
+  },
+];
 ---
 
 <BaseLayout
-  title={`${tool.seoTitle} — FixLanka Tools`}
+  title={tool.seoTitle}
   description={tool.seoDescription}
-  canonicalUrl={`https://fixlanka.com/tools/${tool.slug}`}
+  canonicalUrl={canonical}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+  <SchemaOrg data={schemaData} />
 
-  <article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+  <article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12" data-tool-slug={tool.slug}>
     {/* 1. Breadcrumbs */}
     <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
       <a href="/" class="hover:text-dark-text transition-colors">Home</a>
       <span>/</span>
-      <a href={`/categories/${tool.category}`} class="hover:text-dark-text transition-colors">
+      <a href={`/category/${tool.category}/`} class="hover:text-dark-text transition-colors">
         {category?.name || tool.category}
       </a>
       <span>/</span>
@@ -82,9 +84,12 @@ const schemaData = {
         <span class="text-xs font-medium px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
           On-device privacy
         </span>
-        <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-dark-raised text-dark-secondary border border-dark-border">
+        <a
+          href={`/category/${tool.category}/`}
+          class="text-xs font-mono px-2.5 py-0.5 rounded bg-dark-raised text-dark-secondary border border-dark-border hover:border-brand-500/40 transition-colors"
+        >
           {category?.name}
-        </span>
+        </a>
         <span class="text-xs font-mono text-dark-muted tabular-nums">
           Max: {tool.maxFileSizeFormatted}
         </span>
@@ -99,8 +104,11 @@ const schemaData = {
       </p>
     </header>
 
-    {/* 4. Main Processing Interface */}
-    <section class="rounded-2xl border border-dark-border bg-dark-card shadow-sm dark:shadow-none overflow-hidden p-6 sm:p-8">
+    {/* 4. Main Processing Interface (kept high above the fold) */}
+    <section
+      id="tool-workspace"
+      class="rounded-2xl border border-dark-border bg-dark-card shadow-sm dark:shadow-none overflow-hidden p-6 sm:p-8"
+    >
       <slot />
     </section>
 
@@ -109,7 +117,7 @@ const schemaData = {
       <div class="p-4 rounded-xl bg-dark-card border border-dark-border">
         <span class="text-dark-muted font-medium block mb-1">Supported formats</span>
         <span class="text-dark-text font-mono leading-relaxed">
-          {tool.supportedInputTypes.length > 0 ? tool.supportedInputTypes.join(', ') : 'Direct input'}
+          {tool.supportedInputTypes.length > 0 ? tool.supportedInputTypes.join(', ') : 'Direct text input'}
         </span>
       </div>
       <div class="p-4 rounded-xl bg-dark-card border border-dark-border">
@@ -121,7 +129,7 @@ const schemaData = {
       <div class="p-4 rounded-xl bg-dark-card border border-dark-border">
         <span class="text-dark-muted font-medium block mb-1">Privacy guarantee</span>
         <span class="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1.5 font-mono">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
           On-device (0 B sent)
@@ -144,23 +152,50 @@ const schemaData = {
       </div>
     </section>
 
-    {/* 7. Privacy & Security Information */}
+    {/* 7. Key Features & Practical Examples */}
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text tracking-tight">Key features</h2>
+        <ul class="space-y-2 text-xs text-dark-secondary list-disc pl-5">
+          {tool.featuresList.map((feature) => (
+            <li>{feature}</li>
+          ))}
+        </ul>
+      </div>
+
+      {tool.examples && tool.examples.length > 0 && (
+        <div class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+          <h2 class="text-lg font-semibold text-dark-text tracking-tight">Practical examples</h2>
+          <div class="space-y-3 text-xs">
+            {tool.examples.map((ex) => (
+              <div class="p-3 rounded-lg bg-dark-surface border border-dark-border space-y-1">
+                <div class="font-semibold text-dark-text">{ex.title}</div>
+                <div class="text-dark-muted font-mono">Input: {ex.input}</div>
+                <div class="text-dark-secondary">Result: {ex.output}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+
+    {/* 8. Privacy & Security Information */}
     <section class="p-6 rounded-xl bg-dark-card border border-brand-500/25 space-y-2">
-      <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-semibold text-sm">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="flex items-center gap-2 text-brand-700 dark:text-brand-400 font-semibold text-sm">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
         On-device privacy guarantee
       </div>
       <p class="text-xs text-dark-secondary leading-relaxed">
-        {tool.privacyNotice} FixLanka Tools never sends your files over the internet. Everything runs directly in your browser's memory and disappears as soon as you close the page.
+        {tool.privacyNotice} FixLanka Tools never sends your files over the internet. Everything runs directly in your browser's memory and clears when you close the page.
       </p>
     </section>
 
-    {/* 8. Frequently Asked Questions */}
+    {/* 9. Frequently Asked Questions */}
     {tool.faqs.length > 0 && (
       <section class="space-y-4">
-        <h2 class="text-xl font-semibold text-dark-text tracking-tight">Frequently asked questions</h2>
+        <h2 className="text-xl font-semibold text-dark-text tracking-tight">Frequently asked questions</h2>
         <div class="space-y-3">
           {tool.faqs.map((faq) => (
             <div class="p-5 rounded-xl bg-dark-card border border-dark-border space-y-2">
@@ -172,9 +207,35 @@ const schemaData = {
       </section>
     )}
 
-    {/* 9. Related Tools */}
-    {relatedTools.length > 0 && (
+    {/* 10. Related Educational Articles */}
+    {relatedArticles.length > 0 && (
       <section class="space-y-4 pt-6 border-t border-dark-border">
+        <div class="flex items-end justify-between">
+          <h2 class="text-xl font-semibold text-dark-text tracking-tight">Relevant guides &amp; tutorials</h2>
+          <a href="/blog/" class="text-xs font-medium text-brand-700 dark:text-brand-400 hover:underline">
+            All articles →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {relatedArticles.map((art) => (
+            <a
+              href={`/blog/${art.slug}/`}
+              class="p-4 rounded-xl bg-dark-card border border-dark-border hover:border-brand-500/40 transition-colors space-y-1.5"
+            >
+              <div class="text-sm font-semibold text-dark-text">{art.data.title}</div>
+              <p class="text-xs text-dark-secondary line-clamp-2">{art.data.excerpt}</p>
+              <span class="inline-block text-xs font-medium text-brand-700 dark:text-brand-400 pt-1">
+                Read guide →
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* 11. Related Tools */}
+    {relatedTools.length > 0 && (
+      <section class="space-y-4 pt-6 border-t border-dark-border" data-related-tools>
         <h2 class="text-xl font-semibold text-dark-text tracking-tight">Related tools</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {relatedTools.map((relTool) => (
@@ -185,3 +246,58 @@ const schemaData = {
     )}
   </article>
 </BaseLayout>
+
+<script>
+  const root = document.querySelector('[data-tool-slug]');
+  const toolSlug = root?.getAttribute('data-tool-slug');
+  const track = (eventName: string, params: Record<string, string>) => {
+    const gtag = (window as unknown as { gtag?: Function }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', eventName, params);
+    }
+  };
+
+  if (toolSlug) {
+    track('tool_opened', { tool_slug: toolSlug });
+
+    const workspace = document.getElementById('tool-workspace');
+    if (workspace) {
+      let usedTracked = false;
+      const markUsed = () => {
+        if (usedTracked) return;
+        usedTracked = true;
+        track('tool_used', { tool_slug: toolSlug });
+      };
+      workspace.addEventListener('change', markUsed, { passive: true });
+      workspace.addEventListener('input', markUsed, { passive: true });
+
+      workspace.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement | null;
+        const btn = target?.closest('button, a');
+        if (!btn) return;
+        const label = (btn.textContent || '').toLowerCase();
+        if (
+          label.includes('download') ||
+          label.includes('copy') ||
+          label.includes('merge') ||
+          label.includes('extract') ||
+          label.includes('compress') ||
+          label.includes('generate')
+        ) {
+          track('tool_completed', { tool_slug: toolSlug, action: label.trim().slice(0, 40) });
+        }
+      });
+    }
+
+    const relatedWrap = document.querySelector('[data-related-tools]');
+    relatedWrap?.addEventListener('click', (e) => {
+      const link = (e.target as HTMLElement | null)?.closest('a');
+      if (link) {
+        track('related_tool_clicked', {
+          from_tool: toolSlug,
+          target_href: link.getAttribute('href') || '',
+        });
+      }
+    });
+  }
+</script>

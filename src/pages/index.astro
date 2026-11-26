@@ -14,6 +14,8 @@ const allTools = getAllTools();
 <BaseLayout
   title="FixLanka Tools — Free, Private Online Tools for Everyday Tasks"
   description="Free online tools to compress photos, merge PDFs, remove location info from pictures, make QR codes, and more. 100% private — your files never leave your device."
+  canonicalUrl="https://fixlanka.com/"
+  includeWebsiteSchema={true}
 >
   {/* 1. Modern SaaS Hero Section */}
   <section class="border-b border-dark-border pt-12 pb-16 sm:pt-16 sm:pb-24">
@@ -43,13 +45,13 @@ const allTools = getAllTools();
             <HeroSearch />
             <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-dark-muted">
               <span class="text-dark-secondary font-medium">Popular:</span>
-              <a href="/tools/image-compressor" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">compress photo</a>
+              <a href="/tools/image-compressor/" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">compress photo</a>
               <span>•</span>
-              <a href="/tools/pdf-merger" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">combine pdf</a>
+              <a href="/tools/pdf-merger/" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">combine pdf</a>
               <span>•</span>
-              <a href="/tools/exif-privacy-cleaner" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">remove photo location</a>
+              <a href="/tools/exif-privacy-cleaner/" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">remove photo location</a>
               <span>•</span>
-              <a href="/tools/qr-code-generator" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">qr code</a>
+              <a href="/tools/qr-code-generator/" class="hover:text-brand-600 dark:hover:text-brand-400 underline underline-offset-2 transition-colors">qr code</a>
             </div>
           </div>
         </div>
@@ -159,7 +161,7 @@ const allTools = getAllTools();
             </svg>
           </div>
           <div>
-            <div class="text-base font-semibold text-dark-text tabular-nums">10 Categories</div>
+            <div class="text-base font-semibold text-dark-text tabular-nums">{CATEGORY_LIST.length} Categories</div>
             <div class="text-xs text-dark-secondary">Easy to find and use</div>
           </div>
         </div>
@@ -200,64 +202,64 @@ const allTools = getAllTools();
       <ShowcaseToolCard
         title="Photo Compressor"
         description="Shrink photos for email"
-        href="/tools/image-compressor"
+        href="/tools/image-compressor/"
         iconType="compress"
         tag="Popular"
       />
       <ShowcaseToolCard
         title="PDF Merger"
         description="Combine PDF documents"
-        href="/tools/pdf-merger"
+        href="/tools/pdf-merger/"
         iconType="pdf"
         tag="Popular"
       />
       <ShowcaseToolCard
         title="Photo Privacy"
         description="Remove GPS & phone info"
-        href="/tools/exif-privacy-cleaner"
+        href="/tools/exif-privacy-cleaner/"
         iconType="shield"
         tag="Private"
       />
       <ShowcaseToolCard
         title="QR Code Maker"
         description="Create codes for links & WiFi"
-        href="/tools/qr-code-generator"
+        href="/tools/qr-code-generator/"
         iconType="qr"
       />
       <ShowcaseToolCard
         title="Format Converter"
         description="Change JPG, PNG, and WebP"
-        href="/tools/image-converter"
+        href="/tools/image-converter/"
         iconType="convert"
       />
       <ShowcaseToolCard
         title="Word Counter"
         description="Count words & reading time"
-        href="/tools/word-counter"
+        href="/tools/word-counter/"
         iconType="counter"
       />
       <ShowcaseToolCard
         title="Video to GIF"
         description="Turn video into animated GIF"
-        href="/tools/video-to-gif"
+        href="/tools/video-to-gif/"
         iconType="film"
       />
       <ShowcaseToolCard
         title="Audio Extractor"
         description="Save sound from video clips"
-        href="/tools/audio-extractor"
+        href="/tools/audio-extractor/"
         iconType="audio"
       />
       <ShowcaseToolCard
         title="Password Maker"
         description="Generate strong passwords"
-        href="/tools/password-generator"
+        href="/tools/password-generator/"
         iconType="key"
       />
       <ShowcaseToolCard
         title="AI Photo Checker"
         description="Check if an image has AI tags"
-        href="/tools/ai-metadata-inspector"
+        href="/tools/ai-metadata-inspector/"
         iconType="cpu"
       />
     </div>
@@ -286,11 +288,11 @@ const allTools = getAllTools();
       <p class="text-xs text-dark-secondary mt-1">Find the right tool for whatever you need to do</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {CATEGORY_LIST.map((cat) => (
         <CategoryCard
           category={cat}
-          toolCount={getToolsByCategory(cat.id).length}
+          toolCount={getToolsByCategory(cat.id, true).length}
         />
       ))}
     </div>

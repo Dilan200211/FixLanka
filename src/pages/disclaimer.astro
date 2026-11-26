@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+
+const schemaData = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fixlanka.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Disclaimer', item: 'https://fixlanka.com/disclaimer/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Disclaimer — FixLanka Tools"
+  description="Important technical disclaimers on browser-based file processing, metadata detection limits, and educational guides on FixLanka Tools."
+  canonicalUrl="https://fixlanka.com/disclaimer/"
+>
+  <SchemaOrg data={schemaData} />
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+    <header class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-dark-text transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-dark-text font-medium">Disclaimer</span>
+      </nav>
+      <span class="inline-block text-xs font-medium px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
+        Platform Notice
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-semibold text-dark-text tracking-tight">
+        Disclaimer
+      </h1>
+      <p class="text-xs text-dark-muted">
+        Last Updated: November 27, 2026
+      </p>
+    </header>
+
+    <div class="space-y-6 text-sm text-dark-secondary leading-relaxed">
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">1. General Information Only</h2>
+        <p>
+          The tools, calculators, and technical articles published on FixLanka Tools are provided for general informational and utility purposes. They do not constitute legal, forensic, security compliance, or financial advice.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">2. Metadata &amp; Provenance Accuracy Limits</h2>
+        <p>
+          Tools such as the EXIF Metadata Viewer, EXIF Privacy Cleaner, and AI Metadata &amp; C2PA Inspector inspect structural headers and embedded manifests present in the file you supply.
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs text-dark-secondary">
+          <li>Absence of AI generator tags or C2PA Content Credentials does not prove a photo was captured by a human camera, because social platforms and editors frequently strip metadata.</li>
+          <li>Always verify critical documents and sanitized images independently before sharing sensitive materials publicly.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">3. Browser &amp; Device Constraints</h2>
+        <p>
+          Because FixLanka Tools processes files in your browser's RAM rather than on cloud servers, very large files or older mobile devices may hit browser memory limits. Always keep copies of original files before running batch edits or conversions.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">4. External Links &amp; Third-Party Services</h2>
+        <p>
+          Educational guides may link to external standards bodies and technical documentation (such as Google Search documentation, MDN Web Docs, IETF RFCs, or C2PA specifications). We do not control external sites and are not responsible for their content or availability.
+        </p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+
+const schemaData = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fixlanka.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Terms of Service', item: 'https://fixlanka.com/terms-of-service/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Terms of Service — FixLanka Tools"
+  description="Terms and conditions governing use of FixLanka Tools free browser-based utilities and educational guides."
+  canonicalUrl="https://fixlanka.com/terms-of-service/"
+>
+  <SchemaOrg data={schemaData} />
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+    <header class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-dark-text transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-dark-text font-medium">Terms of Service</span>
+      </nav>
+      <span class="inline-block text-xs font-medium px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
+        Terms &amp; Conditions
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-semibold text-dark-text tracking-tight">
+        Terms of Service
+      </h1>
+      <p class="text-xs text-dark-muted">
+        Last Updated: November 27, 2026
+      </p>
+    </header>
+
+    <div class="space-y-6 text-sm text-dark-secondary leading-relaxed">
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">1. Acceptance of Terms</h2>
+        <p>
+          By accessing or using FixLanka Tools (<a href="https://fixlanka.com/" class="text-brand-600 dark:text-brand-400 underline">https://fixlanka.com/</a>), you agree to these Terms of Service. If you do not agree with these terms, please discontinue use of the website.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">2. Permitted Use</h2>
+        <p>
+          FixLanka Tools is provided free of charge for personal, educational, and professional use. You agree not to:
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs text-dark-secondary">
+          <li>Use the site for unlawful activities or to distribute malicious files.</li>
+          <li>Attempt to disrupt, scrape abusively, or bypass security controls on the hosting infrastructure.</li>
+          <li>Misrepresent output from metadata or provenance tools to forge records or deceive recipients.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">3. Your Files &amp; Ownership</h2>
+        <p>
+          You retain 100% ownership and responsibility for all images, documents, text, and media you process using FixLanka Tools. Keep backup copies of important original files before compressing, resizing, splitting, or stripping metadata.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">4. Availability &amp; Liability</h2>
+        <p>
+          All utilities and guides are provided on an "as is" and "as available" basis without warranties of fitness for a particular purpose. To the fullest extent permitted by applicable law, FixLanka Tools is not liable for data loss, browser memory limits, or indirect damages resulting from tool usage.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">5. Contact &amp; Related Policies</h2>
+        <p>
+          Review our <a href="/privacy-policy/" class="text-brand-600 dark:text-brand-400 underline">Privacy Policy</a>, <a href="/disclaimer/" class="text-brand-600 dark:text-brand-400 underline">Disclaimer</a>, and <a href="/editorial-policy/" class="text-brand-600 dark:text-brand-400 underline">Editorial Policy</a>, or reach us at <a href="mailto:contact@fixlanka.com" class="text-brand-600 dark:text-brand-400 underline">contact@fixlanka.com</a>.
+        </p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

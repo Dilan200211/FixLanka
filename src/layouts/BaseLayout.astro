@@ -1,6 +1,7 @@
 ---
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -9,17 +10,76 @@ interface Props {
   canonicalUrl?: string;
   ogImage?: string;
   type?: string;
+  noindex?: boolean;
+  includeWebsiteSchema?: boolean;
+}
+
+function normalizeCanonical(raw: string): string {
+  try {
+    const url = new URL(raw, 'https://fixlanka.com');
+    url.search = '';
+    url.hash = '';
+    if (url.pathname !== '/' && !url.pathname.endsWith('/') && !/\.[a-z0-9]+$/i.test(url.pathname)) {
+      url.pathname = `${url.pathname}/`;
+    }
+    return url.toString();
+  } catch {
+    return raw;
+  }
 }
 
 const {
   title = 'FixLanka Tools — Free, Privacy-First Online Utilities',
   description = 'Powerful, free online tools for image processing, PDF management, metadata inspection, developer utilities, and security. Fast & private with zero server uploads.',
   canonicalUrl = Astro.url.href,
-  ogImage = 'https://fixlanka.com/og-image.png',
+  ogImage = 'https://fixlanka.com/favicon.svg',
   type = 'website',
+  noindex = false,
+  includeWebsiteSchema = false,
 } = Astro.props;
 
+const resolvedCanonical = normalizeCanonical(canonicalUrl);
 const siteName = 'FixLanka Tools';
+const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
+const gscToken = import.meta.env.PUBLIC_GSC_VERIFICATION;
+
+const baseSchemas: Record<string, unknown>[] = [
+  {
+    '@type': 'Organization',
+    '@id': 'https://fixlanka.com/#organization',
+    name: 'FixLanka Tools',
+    url: 'https://fixlanka.com/',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://fixlanka.com/favicon.svg',
+    },
+    sameAs: ['https://github.com/Dilan200211/FixLanka'],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'contact@fixlanka.com',
+      url: 'https://fixlanka.com/contact/',
+    },
+  },
+];
+
+if (includeWebsiteSchema) {
+  baseSchemas.push({
+    '@type': 'WebSite',
+    '@id': 'https://fixlanka.com/#website',
+    url: 'https://fixlanka.com/',
+    name: 'FixLanka Tools',
+    publisher: { '@id': 'https://fixlanka.com/#organization' },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://fixlanka.com/tools/?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  });
+}
 ---
 
 <!doctype html>
@@ -29,7 +89,9 @@ const siteName = 'FixLanka Tools';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
+    <link rel="canonical" href={resolvedCanonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {gscToken && <meta name="google-site-verification" content={gscToken} />}
 
     {/* Favicon & Agent Discovery */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -41,7 +103,7 @@ const siteName = 'FixLanka Tools';
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:url" content={resolvedCanonical} />
     <meta property="og:image" content={ogImage} />
 
     {/* Twitter */}
@@ -58,6 +120,23 @@ const siteName = 'FixLanka Tools';
       crossorigin
       href="/fonts/plus-jakarta-sans-latin.woff2"
     />
+
+    <SchemaOrg data={baseSchemas} />
+
+    {/* Optional GA4 Analytics (only loaded when PUBLIC_GA4_MEASUREMENT_ID is configured) */}
+    {ga4Id && !noindex && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+        <script is:inline define:vars={{ ga4Id }}>
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () {
+            window.dataLayer.push(arguments);
+          };
+          window.gtag('js', new Date());
+          window.gtag('config', ga4Id, { anonymize_ip: true });
+        </script>
+      </>
+    )}
 
     {/* Immediate theme script to prevent flash */}
     <script is:inline>

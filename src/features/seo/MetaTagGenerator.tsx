@@ -50,9 +50,9 @@ ${twitterHandle ? `<meta name="twitter:site" content="${twitterHandle}" />` : ''
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Configuration Form */}
         <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4">
-          <h3 className="font-bold text-dark-text uppercase tracking-wider flex items-center gap-2">
+          <h2 className="font-bold text-dark-text uppercase tracking-wider flex items-center gap-2 text-xs">
             <Tag className="w-4 h-4 text-brand-600 dark:text-brand-400" /> Meta Tag Settings
-          </h3>
+          </h2>
 
           <div>
             <div className="flex justify-between font-medium text-dark-secondary mb-1">
@@ -158,9 +158,9 @@ ${twitterHandle ? `<meta name="twitter:site" content="${twitterHandle}" />` : ''
         <div className="space-y-4">
           {/* Google SERP Preview */}
           <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-2">
-            <h4 className="font-bold text-dark-secondary flex items-center gap-2 mb-2">
+            <h3 className="font-bold text-dark-secondary flex items-center gap-2 mb-2 text-xs">
               <Globe className="w-4 h-4 text-blue-400" /> Google Search Preview
-            </h4>
+            </h3>
             <div className="p-4 rounded-lg bg-[#202124] border border-dark-border space-y-1">
               <div className="text-[11px] text-dark-secondary truncate">{url}</div>
               <div className="text-base font-medium text-[#8ab4f8] hover:underline cursor-pointer truncate">
@@ -174,9 +174,9 @@ ${twitterHandle ? `<meta name="twitter:site" content="${twitterHandle}" />` : ''
 
           {/* Social Card Preview */}
           <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-2">
-            <h4 className="font-bold text-dark-secondary flex items-center gap-2 mb-2">
+            <h3 className="font-bold text-dark-secondary flex items-center gap-2 mb-2 text-xs">
               <Eye className="w-4 h-4 text-brand-600 dark:text-brand-400" /> Social Card Preview
-            </h4>
+            </h3>
             <div className="rounded-lg border border-dark-border bg-[#16181c] overflow-hidden">
               <div className="h-32 bg-dark-raised flex items-center justify-center text-dark-muted text-xs overflow-hidden">
                 {image ? (

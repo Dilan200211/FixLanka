@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+
+const schemaData = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fixlanka.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Editorial Policy', item: 'https://fixlanka.com/editorial-policy/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Editorial Policy — FixLanka Tools"
+  description="How FixLanka Tools researches, writes, verifies, and updates technical guides, tutorials, and tool documentation."
+  canonicalUrl="https://fixlanka.com/editorial-policy/"
+>
+  <SchemaOrg data={schemaData} />
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+    <header class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-dark-text transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-dark-text font-medium">Editorial Policy</span>
+      </nav>
+      <span class="inline-block text-xs font-medium px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
+        Quality &amp; Standards
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-semibold text-dark-text tracking-tight">
+        Editorial Policy
+      </h1>
+      <p class="text-base text-dark-secondary leading-relaxed">
+        Our guides exist to solve real technical problems clearly and honestly. Every article and tool description follows strict verification standards.
+      </p>
+    </header>
+
+    <div class="space-y-6 text-sm text-dark-secondary leading-relaxed">
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">1. People-First, Intent-Focused Writing</h2>
+        <p>
+          We write tutorials for real workflows such as shrinking photos without visible artifacts, verifying file integrity, removing GPS metadata before posting online, and formatting developer payloads. We do not publish thin keyword variations or filler guides.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">2. Factual Accuracy &amp; Source Verification</h2>
+        <ul class="list-disc pl-5 space-y-1.5 text-xs text-dark-secondary">
+          <li>Technical claims reference primary specifications and official documentation (such as MDN Web Docs, W3C standards, C2PA specs, and IETF RFCs).</li>
+          <li>We never fabricate statistics, benchmarks, or hands-on test outcomes. When examples use sample numbers, they are clearly presented as illustrative examples.</li>
+          <li>Tool limitations (such as PDF compression limits on already-compressed scans or metadata detection boundaries) are disclosed openly.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">3. Substantive Updates</h2>
+        <p>
+          Published articles show a clear publication date and an updated date. We only update the modification date when methods, code examples, browser APIs, or technical guidance materially change.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">4. Corrections &amp; Feedback</h2>
+        <p>
+          If you spot an error or outdated instruction in any article or tool page, report it via our <a href="/contact/" class="text-brand-600 dark:text-brand-400 underline">Contact Page</a> or open an issue on GitHub. Verified corrections are applied promptly.
+        </p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

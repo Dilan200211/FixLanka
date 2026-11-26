@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+
+const schemaData = {
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fixlanka.com/' },
+    { '@type': 'ListItem', position: 2, name: 'How We Work', item: 'https://fixlanka.com/how-we-work/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="How FixLanka Tools Works — Local Browser Architecture"
+  description="Understand how FixLanka Tools processes images, PDFs, metadata, and media locally inside your browser using Canvas, Web Cryptography, and pure JavaScript."
+  canonicalUrl="https://fixlanka.com/how-we-work/"
+>
+  <SchemaOrg data={schemaData} />
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+    <header class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-dark-text transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-dark-text font-medium">How We Work</span>
+      </nav>
+      <span class="inline-block text-xs font-medium px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
+        Architecture &amp; Privacy
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-semibold text-dark-text tracking-tight">
+        How FixLanka Tools Works
+      </h1>
+      <p class="text-base text-dark-secondary leading-relaxed">
+        Instead of uploading your photos and documents to remote servers, FixLanka runs processing engines directly inside your device's web browser.
+      </p>
+    </header>
+
+    <div class="space-y-6 text-sm text-dark-secondary leading-relaxed">
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">1. Step-by-Step Local Execution</h2>
+        <ol class="list-decimal pl-5 space-y-2 text-xs text-dark-secondary">
+          <li><strong>File Selection &amp; Signature Check</strong>: When you drop a file, FixLanka inspects its binary header (magic bytes) and checks safe memory size caps before reading it.</li>
+          <li><strong>In-Browser Processing</strong>: Your browser handles the actual work using native Web APIs and client-side libraries (HTML5 Canvas for images, <code>pdf-lib</code> for PDFs, <code>exifr</code> for metadata, Web Audio API for audio, and <code>crypto.getRandomValues()</code> for passwords).</li>
+          <li><strong>Instant Local Download</strong>: Output files are assembled into a temporary browser Blob URL and saved straight to your device, then released from memory.</li>
+        </ol>
+      </section>
+
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-5 rounded-xl bg-dark-card border border-dark-border space-y-2">
+          <h2 class="text-base font-semibold text-dark-text">Zero File Uploads</h2>
+          <p class="text-xs text-dark-secondary">
+            Sensitive PDFs, tax forms, and personal photos with GPS coordinates never travel over the internet to an unknown processing server.
+          </p>
+        </div>
+        <div class="p-5 rounded-xl bg-dark-card border border-dark-border space-y-2">
+          <h2 class="text-base font-semibold text-dark-text">Open &amp; Verifiable</h2>
+          <p class="text-xs text-dark-secondary">
+            You can inspect network activity in your browser DevTools while using any tool, or review the source code on <a href="https://github.com/Dilan200211/FixLanka" target="_blank" rel="noopener noreferrer" class="text-brand-600 dark:text-brand-400 underline">GitHub</a>.
+          </p>
+        </div>
+      </section>
+
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-lg font-semibold text-dark-text">Explore Tools &amp; Policies</h2>
+        <div class="flex flex-wrap gap-3 text-xs">
+          <a href="/tools/" class="px-3.5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium transition-colors">Browse all 20 tools</a>
+          <a href="/privacy-policy/" class="px-3.5 py-2 rounded-lg bg-dark-surface border border-dark-border hover:border-brand-500/40 text-dark-text font-medium transition-colors">Privacy Policy</a>
+          <a href="/editorial-policy/" class="px-3.5 py-2 rounded-lg bg-dark-surface border border-dark-border hover:border-brand-500/40 text-dark-text font-medium transition-colors">Editorial Policy</a>
+        </div>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

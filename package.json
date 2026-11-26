@@ -8,11 +8,13 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seo:audit": "node scripts/seo-audit.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.1",
     "@astrojs/tailwind": "^5.1.5",
+    "@supabase/supabase-js": "^2.119.2",
     "astro": "^5.4.2",
     "clsx": "^2.1.1",
     "exifr": "^7.1.3",

@@ -1,0 +1,35 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import {
+  estimateReadingTimeMinutes,
+  getPublishedArticles,
+  getRelatedArticles,
+  type BlogEntry,
+} from '../../lib/blog/articles';
+
+export async function getStaticPaths() {
+  const articles = await getPublishedArticles();
+  return articles.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: BlogEntry;
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+const readingTimeMinutes = estimateReadingTimeMinutes(entry.body);
+const relatedArticles = await getRelatedArticles(entry, 3);
+---
+
+<BlogLayout
+  entry={entry}
+  headings={headings}
+  readingTimeMinutes={readingTimeMinutes}
+  relatedArticles={relatedArticles}
+>
+  <Content />
+</BlogLayout>

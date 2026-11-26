@@ -86,7 +86,7 @@
 
     const createRow = (tool: SearchTool) => {
       const a = document.createElement('a');
-      a.href = `/tools/${tool.slug}`;
+      a.href = `/tools/${tool.slug}/`;
       a.className = 'flex items-center justify-between p-3.5 hover:bg-dark-raised/60 transition-colors group';
 
       const left = document.createElement('div');
@@ -177,7 +177,7 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (currentResults.length > 0) {
-        window.location.href = `/tools/${currentResults[0].slug}`;
+        window.location.href = `/tools/${currentResults[0].slug}/`;
       }
     });
 

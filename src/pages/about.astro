@@ -3,12 +3,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="About FixLanka Tools — Free, Private Online Tools"
-  description="Learn about FixLanka Tools: free in-browser utilities to compress photos, merge PDFs, and protect your privacy without server uploads."
-  canonicalUrl="https://fixlanka.com/about"
+  title="About FixLanka Tools — Free, Private Online Utilities"
+  description="Learn about FixLanka Tools, our mission to provide free browser-based utilities with zero file uploads, transparent ownership, and editorial standards."
+  canonicalUrl="https://fixlanka.com/about/"
 >
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
     <header class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-dark-text transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-dark-text font-medium">About</span>
+      </nav>
       <span class="inline-block text-xs font-medium px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20">
         About FixLanka
       </span>
@@ -61,10 +66,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </section>
 
-      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-2">
-        <h2 class="text-base font-semibold text-dark-text">How it works</h2>
+      <section class="p-6 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-base font-semibold text-dark-text">How it works &amp; editorial standards</h2>
         <p class="text-xs leading-relaxed">
-          When you select a file on FixLanka, your web browser uses its own built-in computing power to perform the task locally. That means it works even if your internet connection is slow or drops out after the page loads.
+          When you select a file on FixLanka, your web browser uses its own computing power to perform the task locally. Learn more on our <a href="/how-we-work/" class="text-brand-600 dark:text-brand-400 underline">How We Work</a> page, review our <a href="/editorial-policy/" class="text-brand-600 dark:text-brand-400 underline">Editorial Policy</a>, or reach out via our <a href="/contact/" class="text-brand-600 dark:text-brand-400 underline">Contact Page</a>.
         </p>
       </section>
     </div>

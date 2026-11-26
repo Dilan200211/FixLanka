@@ -129,7 +129,7 @@ export default function QrCodeGenerator() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Configuration */}
         <div className="p-5 rounded-xl bg-dark-surface border border-dark-border space-y-4">
-          <h3 className="font-bold text-dark-text uppercase tracking-wider">Payload Information</h3>
+          <h2 className="font-bold text-dark-text uppercase tracking-wider text-xs">Payload Information</h2>
 
           {qrType === 'url' && (
             <div>
@@ -233,7 +233,7 @@ export default function QrCodeGenerator() {
 
           {/* Styling Options */}
           <div className="pt-4 border-t border-dark-border space-y-3">
-            <h4 className="font-bold text-dark-secondary uppercase tracking-wider">Customization</h4>
+            <h3 className="font-bold text-dark-secondary uppercase tracking-wider text-xs">Customization</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
                 <label className="block text-dark-secondary font-medium mb-1">Error Correction</label>
@@ -281,7 +281,7 @@ export default function QrCodeGenerator() {
         {/* Live QR Preview & Export */}
         <div className="p-5 rounded-xl bg-dark-surface border border-dark-border flex flex-col items-center justify-between gap-6">
           <div className="text-center">
-            <h3 className="font-bold text-dark-text uppercase tracking-wider">QR Code Preview</h3>
+            <h2 className="font-bold text-dark-text uppercase tracking-wider text-xs">QR Code Preview</h2>
             <p className="text-[11px] text-dark-secondary mt-0.5">High-resolution vector-quality render</p>
           </div>
 

@@ -1,0 +1,395 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+import ToolCard from '../components/cards/ToolCard.astro';
+import { getAuthorById } from '../data/authors';
+import { getBlogCategoryBySlug } from '../data/blogCategories';
+import { getToolBySlug } from '../data/tools';
+import type { BlogEntry } from '../lib/blog/articles';
+
+interface HeadingItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  entry: BlogEntry;
+  headings: HeadingItem[];
+  readingTimeMinutes: number;
+  relatedArticles: BlogEntry[];
+}
+
+const { entry, headings, readingTimeMinutes, relatedArticles } = Astro.props;
+const { data } = entry;
+const author = getAuthorById(data.author);
+const category = getBlogCategoryBySlug(data.category);
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+const relatedToolDefs = data.relatedTools
+  .map((slug) => getToolBySlug(slug))
+  .filter((t): t is NonNullable<typeof t> => Boolean(t));
+
+const canonical = data.canonicalUrl ?? `https://fixlanka.com/blog/${entry.slug}/`;
+const pageTitle = data.seoTitle ?? data.title;
+const publishedIso = data.publishDate.toISOString();
+const modifiedIso = (data.updatedDate ?? data.publishDate).toISOString();
+
+const formattedPublish = data.publishDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+const formattedUpdate = (data.updatedDate ?? data.publishDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const schemaData = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${canonical}#article`,
+    headline: data.title,
+    description: data.metaDescription,
+    url: canonical,
+    mainEntityOfPage: canonical,
+    datePublished: publishedIso,
+    dateModified: modifiedIso,
+    image: `https://fixlanka.com${data.featuredImage}`,
+    articleSection: category?.name ?? data.category,
+    keywords: data.tags.join(', '),
+    author: {
+      '@type': 'Person',
+      name: author.name,
+      url: author.url,
+      ...(author.sameAs ? { sameAs: author.sameAs } : {}),
+    },
+    publisher: {
+      '@id': 'https://fixlanka.com/#organization',
+    },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fixlanka.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://fixlanka.com/blog/' },
+      ...(category
+        ? [
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: category.name,
+              item: `https://fixlanka.com/blog/category/${category.slug}/`,
+            },
+            { '@type': 'ListItem', position: 4, name: data.title, item: canonical },
+          ]
+        : [{ '@type': 'ListItem', position: 3, name: data.title, item: canonical }]),
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={data.metaDescription}
+  canonicalUrl={canonical}
+  ogImage={`https://fixlanka.com${data.featuredImage}`}
+  type="article"
+  noindex={data.noindex}
+>
+  <SchemaOrg data={schemaData} />
+
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10" data-blog-slug={entry.slug}>
+    {/* Breadcrumbs */}
+    <nav class="flex flex-wrap items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-dark-text transition-colors">Home</a>
+      <span>/</span>
+      <a href="/blog/" class="hover:text-dark-text transition-colors">Blog</a>
+      {category && (
+        <>
+          <span>/</span>
+          <a href={`/blog/category/${category.slug}/`} class="hover:text-dark-text transition-colors">
+            {category.name}
+          </a>
+        </>
+      )}
+      <span>/</span>
+      <span class="text-dark-text font-medium truncate max-w-[260px] sm:max-w-md">{data.title}</span>
+    </nav>
+
+    {/* Article Header */}
+    <header class="space-y-5">
+      <div class="flex flex-wrap items-center gap-2.5 text-xs">
+        {category && (
+          <a
+            href={`/blog/category/${category.slug}/`}
+            class="px-2.5 py-0.5 rounded bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20 font-medium"
+          >
+            {category.name}
+          </a>
+        )}
+        <span class="font-mono text-dark-muted">{readingTimeMinutes} min read</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-semibold text-dark-text tracking-tight leading-tight">
+        {data.title}
+      </h1>
+
+      <p class="text-base text-dark-secondary leading-relaxed">
+        {data.excerpt}
+      </p>
+
+      {/* Author & Dates Bar */}
+      <div class="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-dark-border text-xs">
+        <div>
+          <a href={author.url} class="font-semibold text-dark-text hover:text-brand-600 dark:hover:text-brand-400">
+            {author.name}
+          </a>
+          <p class="text-dark-muted mt-0.5">{author.role}</p>
+        </div>
+        <div class="flex flex-wrap gap-4 text-dark-muted font-mono">
+          <span>Published: <time datetime={publishedIso}>{formattedPublish}</time></span>
+          <span>Updated: <time datetime={modifiedIso}>{formattedUpdate}</time></span>
+        </div>
+      </div>
+
+      {/* Featured Image */}
+      <figure class="rounded-2xl overflow-hidden border border-dark-border bg-dark-card">
+        <img
+          src={data.featuredImage}
+          alt={data.imageAlt}
+          width="1200"
+          height="630"
+          class="w-full h-auto object-cover"
+          loading="eager"
+          decoding="async"
+        />
+      </figure>
+    </header>
+
+    {/* Table of Contents */}
+    {tocHeadings.length > 0 && (
+      <nav aria-label="Table of contents" class="p-5 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-sm font-semibold text-dark-text">In this guide</h2>
+        <ul class="space-y-1.5 text-xs">
+          {tocHeadings.map((h) => (
+            <li class={h.depth === 3 ? 'pl-4' : ''}>
+              <a
+                href={`#${h.slug}`}
+                class="text-dark-secondary hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    {/* Article Body */}
+    <div class="blog-prose space-y-5 text-sm sm:text-base text-dark-secondary leading-relaxed">
+      <slot />
+    </div>
+
+    {/* Optional Visible Q&A */}
+    {data.faqs.length > 0 && (
+      <section class="space-y-4 pt-6 border-t border-dark-border">
+        <h2 class="text-xl font-semibold text-dark-text tracking-tight">Common questions</h2>
+        <div class="space-y-3">
+          {data.faqs.map((faq) => (
+            <div class="p-5 rounded-xl bg-dark-card border border-dark-border space-y-2">
+              <h3 class="text-sm font-semibold text-dark-text">{faq.question}</h3>
+              <p class="text-xs sm:text-sm text-dark-secondary leading-relaxed">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Related Tools */}
+    {relatedToolDefs.length > 0 && (
+      <section class="space-y-4 pt-6 border-t border-dark-border">
+        <div class="flex items-end justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-dark-text tracking-tight">Try the related tools</h2>
+            <p class="text-xs text-dark-muted mt-1">Run these workflows locally in your browser with zero file uploads</p>
+          </div>
+          <a href="/tools/" class="text-xs font-medium text-brand-700 dark:text-brand-400 hover:underline">
+            All tools →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {relatedToolDefs.map((tool) => (
+            <ToolCard tool={tool} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* External References */}
+    {data.references.length > 0 && (
+      <section class="p-5 rounded-xl bg-dark-card border border-dark-border space-y-3">
+        <h2 class="text-sm font-semibold text-dark-text">References &amp; technical standards</h2>
+        <ul class="space-y-1.5 text-xs">
+          {data.references.map((ref) => (
+            <li>
+              <a
+                href={ref.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-brand-600 dark:text-brand-400 hover:underline"
+              >
+                {ref.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {/* Author Bio */}
+    <section class="p-5 rounded-xl bg-dark-bg border border-dark-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="text-xs font-mono text-dark-muted">Written by</div>
+        <h2 class="text-sm font-semibold text-dark-text">{author.name}</h2>
+        <p class="text-xs text-dark-secondary max-w-xl">{author.bio}</p>
+      </div>
+      <a
+        href="/editorial-policy/"
+        class="text-xs font-medium text-brand-700 dark:text-brand-400 hover:underline flex-shrink-0"
+      >
+        Editorial standards →
+      </a>
+    </section>
+
+    {/* Related Articles */}
+    {relatedArticles.length > 0 && (
+      <section class="space-y-4 pt-6 border-t border-dark-border">
+        <h2 class="text-xl font-semibold text-dark-text tracking-tight">Related guides</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {relatedArticles.map((art) => (
+            <a
+              href={`/blog/${art.slug}/`}
+              class="group p-4 rounded-xl bg-dark-card border border-dark-border hover:border-brand-500/40 transition-colors flex flex-col justify-between space-y-2"
+            >
+              <div class="space-y-1.5">
+                <span class="text-[11px] font-mono text-dark-muted">
+                  {getBlogCategoryBySlug(art.data.category)?.name ?? art.data.category}
+                </span>
+                <h3 class="text-sm font-semibold text-dark-text group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                  {art.data.title}
+                </h3>
+                <p class="text-xs text-dark-secondary line-clamp-2">{art.data.excerpt}</p>
+              </div>
+              <span class="text-xs font-medium text-brand-700 dark:text-brand-400">Read guide →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style is:global>
+  .blog-prose h2 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: rgb(var(--text-main-rgb));
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.015em;
+  }
+  .blog-prose h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: rgb(var(--text-main-rgb));
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .blog-prose p {
+    margin-bottom: 1rem;
+  }
+  .blog-prose ul,
+  .blog-prose ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .blog-prose ul {
+    list-style-type: disc;
+  }
+  .blog-prose ol {
+    list-style-type: decimal;
+  }
+  .blog-prose li {
+    margin-bottom: 0.4rem;
+  }
+  .blog-prose a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .blog-prose code {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.875em;
+    background-color: rgb(var(--surface-raised-rgb));
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.25rem;
+  }
+  .blog-prose pre {
+    background-color: rgb(var(--surface-shell-rgb));
+    border: 1px solid var(--border-hairline);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+  }
+  .blog-prose pre code {
+    background: transparent;
+    padding: 0;
+  }
+  .blog-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+    font-size: 0.875rem;
+  }
+  .blog-prose th,
+  .blog-prose td {
+    border: 1px solid var(--border-hairline);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+  }
+  .blog-prose th {
+    background-color: rgb(var(--surface-raised-rgb));
+    color: rgb(var(--text-main-rgb));
+    font-weight: 600;
+  }
+  .blog-prose blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: rgb(var(--text-main-rgb));
+    margin: 1.25rem 0;
+  }
+</style>
+
+<script>
+  const articleEl = document.querySelector('[data-blog-slug]');
+  const slug = articleEl?.getAttribute('data-blog-slug');
+  if (slug && typeof window !== 'undefined' && typeof (window as unknown as { gtag?: Function }).gtag === 'function') {
+    let tracked = false;
+    const onScroll = () => {
+      if (tracked) return;
+      const rect = articleEl.getBoundingClientRect();
+      const progress = (window.innerHeight - rect.top) / Math.max(1, rect.height);
+      if (progress >= 0.75) {
+        tracked = true;
+        (window as unknown as { gtag: Function }).gtag('event', 'article_read', {
+          article_slug: slug,
+        });
+        window.removeEventListener('scroll', onScroll);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>

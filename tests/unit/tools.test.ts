@@ -15,15 +15,18 @@ describe('Tool Registry', () => {
     expect(tools.length).toBe(20);
   });
 
-  it('contains all 10 long-term categories', () => {
-    expect(CATEGORY_LIST.length).toBe(10);
+  it('contains all 6 canonical categories without empty categories', () => {
+    expect(CATEGORY_LIST.length).toBe(6);
+    for (const cat of CATEGORY_LIST) {
+      expect(getToolsByCategory(cat.id, true).length).toBeGreaterThanOrEqual(3);
+    }
   });
 
   it('can query tools by slug', () => {
     const compressor = getToolBySlug('image-compressor');
     expect(compressor).toBeDefined();
     expect(compressor?.name).toBe('Image Compressor');
-    expect(compressor?.category).toBe('image');
+    expect(compressor?.category).toBe('image-tools');
   });
 
   it('returns related tools for a given tool', () => {
@@ -41,12 +44,21 @@ describe('Tool Registry', () => {
     expect(pdfResults.length).toBeGreaterThanOrEqual(3);
   });
 
-  it('ensures every tool has complete SEO and instructions data', () => {
+  it('ensures every tool has unique primaryKeyword and complete SEO data', () => {
     const tools = getAllTools();
+    const primaries = new Set<string>();
     for (const tool of tools) {
       expect(tool.seoTitle).toBeTruthy();
+      expect(tool.seoTitle.length).toBeLessThanOrEqual(65);
       expect(tool.seoDescription).toBeTruthy();
+      expect(tool.seoDescription.length).toBeGreaterThanOrEqual(110);
+      expect(tool.seoDescription.length).toBeLessThanOrEqual(165);
+      expect(tool.primaryKeyword).toBeTruthy();
+      const normalized = tool.primaryKeyword.toLowerCase().trim();
+      expect(primaries.has(normalized)).toBe(false);
+      primaries.add(normalized);
       expect(tool.instructions.length).toBeGreaterThanOrEqual(3);
+      expect(tool.featuresList.length).toBeGreaterThanOrEqual(3);
       expect(tool.maxFileSize).toBeGreaterThanOrEqual(0);
     }
   });

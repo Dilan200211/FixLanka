@@ -1,31 +1,70 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import ToolCard from '../components/cards/ToolCard.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
 import type { CategoryDefinition } from '../types/tool';
 import { getToolsByCategory } from '../data/tools';
 import { CATEGORY_LIST } from '../data/categories';
+import { getPublishedArticles } from '../lib/blog/articles';
+import { getArticlesForCategory } from '../lib/seo/internal-links';
 
 interface Props {
   category: CategoryDefinition;
 }
 
 const { category } = Astro.props;
-const categoryTools = getToolsByCategory(category.id);
+const categoryTools = getToolsByCategory(category.id, true);
 const otherCategories = CATEGORY_LIST.filter((c) => c.id !== category.id);
+const publishedArticles = await getPublishedArticles();
+const categoryArticles = getArticlesForCategory(category.id, publishedArticles).slice(0, 4);
+
+const schemaData = [
+  {
+    '@type': 'CollectionPage',
+    name: `${category.name} — FixLanka Tools`,
+    url: `https://fixlanka.com/category/${category.slug}/`,
+    description: category.description,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: categoryTools.length,
+      itemListElement: categoryTools.map((tool, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: tool.name,
+        url: `https://fixlanka.com/tools/${tool.slug}/`,
+      })),
+    },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fixlanka.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://fixlanka.com/category/' },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: category.name,
+        item: `https://fixlanka.com/category/${category.slug}/`,
+      },
+    ],
+  },
+];
 ---
 
 <BaseLayout
-  title={`${category.name} — Free Online Utilities | FixLanka Tools`}
+  title={category.seoTitle}
   description={category.description}
-  canonicalUrl={`https://fixlanka.com/categories/${category.slug}`}
+  canonicalUrl={`https://fixlanka.com/category/${category.slug}/`}
 >
+  <SchemaOrg data={schemaData} />
+
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12">
     {/* Category Breadcrumbs & Header */}
     <div class="space-y-4">
       <nav class="flex items-center gap-2 text-xs text-dark-muted" aria-label="Breadcrumb">
         <a href="/" class="hover:text-dark-text transition-colors">Home</a>
         <span>/</span>
-        <a href="/#categories" class="hover:text-dark-text transition-colors">Categories</a>
+        <a href="/category/" class="hover:text-dark-text transition-colors">Categories</a>
         <span>/</span>
         <span class="text-dark-text font-medium">{category.name}</span>
       </nav>
@@ -36,7 +75,9 @@ const otherCategories = CATEGORY_LIST.filter((c) => c.id !== category.id);
         </div>
         <div>
           <h1 class="text-3xl font-semibold text-dark-text tracking-tight">{category.name}</h1>
-          <p class="text-xs font-mono text-dark-muted mt-1 tabular-nums">{categoryTools.length} {categoryTools.length === 1 ? 'tool' : 'tools'} available</p>
+          <p class="text-xs font-mono text-dark-muted mt-1 tabular-nums">
+            {categoryTools.length} {categoryTools.length === 1 ? 'tool' : 'tools'} available
+          </p>
         </div>
       </div>
 
@@ -48,18 +89,38 @@ const otherCategories = CATEGORY_LIST.filter((c) => c.id !== category.id);
     {/* Tools in Category */}
     <section class="space-y-6">
       <h2 class="text-xl font-semibold text-dark-text tracking-tight">Available tools</h2>
-      {categoryTools.length > 0 ? (
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categoryTools.map((tool) => (
-            <ToolCard tool={tool} />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {categoryTools.map((tool) => (
+          <ToolCard tool={tool} />
+        ))}
+      </div>
+    </section>
+
+    {/* Relevant Educational Guides */}
+    {categoryArticles.length > 0 && (
+      <section class="space-y-4 pt-6 border-t border-dark-border">
+        <div class="flex items-end justify-between">
+          <h2 class="text-xl font-semibold text-dark-text tracking-tight">Guides &amp; tutorials for {category.name}</h2>
+          <a href="/blog/" class="text-xs font-medium text-brand-700 dark:text-brand-400 hover:underline">
+            View all guides →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {categoryArticles.map((art) => (
+            <a
+              href={`/blog/${art.slug}/`}
+              class="p-4 rounded-xl bg-dark-card border border-dark-border hover:border-brand-500/40 transition-colors space-y-1.5"
+            >
+              <h3 class="text-sm font-semibold text-dark-text">{art.data.title}</h3>
+              <p class="text-xs text-dark-secondary line-clamp-2">{art.data.excerpt}</p>
+              <span class="inline-block text-xs font-medium text-brand-700 dark:text-brand-400 pt-1">
+                Read guide →
+              </span>
+            </a>
           ))}
         </div>
-      ) : (
-        <div class="p-12 text-center rounded-2xl bg-dark-card border border-dark-border">
-          <p class="text-dark-secondary text-sm">Tools for this category are currently being expanded.</p>
-        </div>
-      )}
-    </section>
+      </section>
+    )}
 
     {/* Browse Other Categories */}
     <section class="space-y-6 pt-10 border-t border-dark-border">
@@ -67,7 +128,7 @@ const otherCategories = CATEGORY_LIST.filter((c) => c.id !== category.id);
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {otherCategories.map((cat) => (
           <a
-            href={`/categories/${cat.slug}`}
+            href={`/category/${cat.slug}/`}
             class="p-3 rounded-lg bg-dark-card border border-dark-border hover:border-brand-500/40 text-center transition-colors group"
           >
             <span class="text-xs font-semibold text-dark-secondary group-hover:text-brand-600 dark:group-hover:text-brand-400 block truncate">
